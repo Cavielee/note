@@ -87,7 +87,7 @@ Repair会修复Metadata表的错误，通常有两种用途：
 
 ### 1、添加依赖
 向```pom.xml```添加依赖
-```
+```properties
 <dependency>
 	<groupId>org.flywaydb</groupId>
 	<artifactId>flyway-core</artifactId>
