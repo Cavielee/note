@@ -222,9 +222,9 @@ row 2 col 1 | row 2 col 2
 ## 数学公式
 ````
 语法：
-```math
+​```math
 E = mc^2
-```
+​```
 ````
 效果：
 ```math
@@ -234,10 +234,10 @@ E = mc^2
 ## 流程图
 ````
 语法：
-```
+​```
 graph LR
 A-->B
-```
+​```
 ````
 效果：
 ```
@@ -249,11 +249,11 @@ A-->B
 ````
 语法：
 
-```
+​```
 sequenceDiagram
 A->>B: How are you?
 B->>A: Great!
-```
+​```
 
 ````
 效果：
@@ -262,3 +262,9 @@ sequenceDiagram
 A->>B: How are you?
 B->>A: Great!
 ```
+
+
+
+# 建议编译软件
+
+建议小伙伴使用 `Typora` 这款编译软件去写 MarkDown。
