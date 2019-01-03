@@ -82,25 +82,54 @@ sonar.web.context=/sonarqube
 
 
 
-5. 解析项目
+5. 修改 Maven 的 settings.xml
+
+添加下列信息，**具体参数值根据上面配置做修改**。
+
+```xml
+<profile>
+    <id>sonar</id>
+    <activation>
+        <activeByDefault>true</activeByDefault>
+    </activation>
+    <properties>
+        <sonar.jdbc.url>
+            jdbc:mysql://127.0.0.1:3306/sonar?characterEncoding=utf8
+        </sonar.jdbc.url>
+        <sonar.jdbc.driver>com.mysql.jdbc.Driver</sonar.jdbc.driver>
+        <sonar.jdbc.username>sonar</sonar.jdbc.username>
+        <sonar.jdbc.password>sonar</sonar.jdbc.password>
+        <sonar.host.url>http://127.0.0.1/sonarqube</sonar.host.url>
+    </properties>
+</profile>
+```
+
+
+
+6. 解析项目
 
 通过配置的访问路径登陆页面，默认初始账号和密码都为 admin，密码可登陆后修改。
 
 创建项目可生成 Token（权限认证）
 
-并在要解析的项目下运行 mvn 命令（参数根据个人修改）
+并**在要解析的项目下运行 mvn 命令**（参数根据个人修改）
 
 ```
 mvn sonar:sonar ^
   -Dsonar.host.url=http://127.0.0.1/sonarqube ^
-  -Dsonar.login=4ccaeea7f000ba1573c3b5b6fe22f44ce3bf672e
+  -Dsonar.login=用户名 ^
+  -Dsonar.password=密码
 ```
 
 注意：windows下 `^` 要换成 `\` 。
 
 
 
-6. 中文插件（不推荐）
+参数具体指可见：https://docs.sonarqube.org/latest/analysis/analysis-parameters/
+
+
+
+7. 中文插件（不推荐）
 
 在 Administrator -> Marketplace 中找到 Chinese packet 插件，安装后重启就可以中文客户端。
 

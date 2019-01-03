@@ -499,17 +499,232 @@ public class NettyTimeClientHandler extends ChannelDuplexHandler {
 
 
 
+**Protobuf 使用详解可看本人的 Proto 专题。**
 
 
 
+## JBoss Marshalling 序列化例子
 
-Protobuf 使用详解可看本人的 Proto 专题。
-
-
-
+　　JBoss Marshalling 是一个 Java 对象的序列化 API 包，修正了 JDK 自带的序列化包的很多问题，但又保持跟 java.io.Serializable 接口的兼容；同时增加了一些可调的参数和附加的特性，并且这些参数和特性可通过工厂类进行配置。
 
 
 
+Netty 提供了 MarshallingDecoder、MarshallingEncoder。（内部都实现了对半包的处理）
+
+MarshallingDecoder：用于解码，创建时需要提供两个参数 —— provider 和 objectSize。创建 provider 需要提供 factory 和 config。
+
+MarshallingEncoder：用于编码，创建和上述相似，要传入 provider。
+
+
+
+导包：
+
+```xml
+<dependency>
+    <groupId>org.jboss.marshalling</groupId>
+    <artifactId>jboss-marshalling</artifactId>
+    <version>2.0.6.Final</version>
+</dependency>
+<dependency>
+    <groupId>org.jboss.marshalling</groupId>
+    <artifactId>jboss-marshalling-serial</artifactId>
+    <version>2.0.6.Final</version>
+</dependency>
+```
+
+
+
+自定义 Decoder 和 Encoder 创建工厂：
+
+```java
+/**
+ * Marshalling解码、编码器工厂
+ *
+ * @author created by Cavielee
+ * @date 2019年1月3日 上午10:52:17
+ */
+public class MarshallingCodecFactory {
+
+	private MarshallingCodecFactory() {
+		throw new IllegalStateException("MarshallingCodecFactory class");
+	}
+	/**
+	 * 创建 JBoss Marshalling 解码器
+	 * 
+	 * @return
+	 */
+	public static MarshallingDecoder bulidMarshallingDecoder() {
+		// serial 表示创建的是 java 序列化工厂对象
+		final MarshallerFactory factory = Marshalling.getProvidedMarshallerFactory("serial");
+		final MarshallingConfiguration config = new MarshallingConfiguration();
+		// 设置版本号为5
+		config.setVersion(5);
+		UnmarshallerProvider provider = new DefaultUnmarshallerProvider(factory, config);
+		// 设置单个对象的大小最大为 1M
+		return new MarshallingDecoder(provider, 1024);
+	}
+
+	/**
+	 * 创建 JBoss Marshalling 编码器
+	 * 
+	 * @return
+	 */
+	public static MarshallingEncoder buildMarshallingEncoder() {
+		final MarshallerFactory factory = Marshalling.getProvidedMarshallerFactory("serial");
+		final MarshallingConfiguration config = new MarshallingConfiguration();
+		config.setVersion(5);
+		MarshallerProvider provider = new DefaultMarshallerProvider(factory, config);
+		return new MarshallingEncoder(provider);
+	}
+}
+
+```
+
+
+
+序列化的对象：
+
+```java
+/**
+* 用户请求
+*
+* @author created by Cavielee
+* @date 2018年12月28日 上午11:18:11
+*/
+public class UserRequest implements Serializable {
+
+	/**
+	 * 默认 ID 序列
+	 */
+	private static final long serialVersionUID = 1L;
+	
+	// 用户id
+	private int uid;
+	private String username;
+	private String order;
+	
+	
+	// 省略 get、set
+	
+	@Override
+	public String toString() {
+		return "UserRequest[ uid: " + uid + " ; username :" + username + "; order :" + order + " ]";
+	}
+	
+	
+}
+
+/**
+ * 时间响应
+ *
+ * @author created by Cavielee
+ * @date 2018年12月28日 上午11:27:55
+ */
+public class TimeResponse implements Serializable {
+
+	/**
+	 * 默认的 ID
+	 */
+	private static final long serialVersionUID = 1L;
+
+	// 状态码，0代表成功
+	private int respCode;
+
+	// 时间
+	private String time;
+
+	private String errMsg;
+
+	// 省略 get、set
+
+	@Override
+	public String toString() {
+		return "TimeResponse[ respCode: " + respCode + " ; time :" + time + " ; errMsg :" + errMsg + " ]";
+	}
+}
+
+```
+
+
+
+服务端：
+
+```java
+public class NettyTimeServer {
+	private static final int PORT = 8080;
+
+	public static void main(String[] args) throws Exception {
+		EventLoopGroup bossGroup = new NioEventLoopGroup(1);
+		EventLoopGroup workerGroup = new NioEventLoopGroup();
+		try {
+			ServerBootstrap b = new ServerBootstrap();
+			b.group(bossGroup).channel(NioServerSocketChannel.class).option(ChannelOption.SO_BACKLOG, 1024)
+					.childHandler(new ChannelInitializer<Channel>() {
+
+						@Override
+						protected void initChannel(Channel ch) throws Exception {
+							ChannelPipeline pipeline = ch.pipeline();
+							pipeline.addLast(MarshallingCodecFactory.bulidMarshallingDecoder());
+							pipeline.addLast(MarshallingCodecFactory.buildMarshallingEncoder());
+							pipeline.addLast(new NettyTimeServerHandler());
+						}
+					});
+
+			// 同步启动服务器
+			ChannelFuture f = b.bind(PORT).sync();
+			System.out.println("Time server start");
+			// 等待服务器监听Channel关闭
+			f.channel().closeFuture().sync();
+		} finally {
+			// 缓慢关闭
+			bossGroup.shutdownGracefully();
+			workerGroup.shutdownGracefully();
+		}
+	}
+
+}
+
+```
+
+
+
+客户端：
+
+```java
+public class NettyTimeClient {
+	private static final int PORT = 8080;
+	private static final String HOST = "127.0.0.1";
+
+	public static void main(String[] args) throws Exception {
+
+		EventLoopGroup group = new NioEventLoopGroup();
+		try {
+			Bootstrap b = new Bootstrap();
+			b.group(group).channel(NioSocketChannel.class).option(ChannelOption.TCP_NODELAY, true)
+					.handler(new ChannelInitializer<SocketChannel>() {
+						@Override
+						public void initChannel(SocketChannel ch) throws Exception {
+							ChannelPipeline pipeline = ch.pipeline();
+							pipeline.addLast(MarshallingCodecFactory.bulidMarshallingDecoder());
+							pipeline.addLast(MarshallingCodecFactory.buildMarshallingEncoder());
+							pipeline.addLast(new NettyTimeClientHandler());
+						}
+					});
+
+			// 启动客户端
+			ChannelFuture f = b.connect(HOST, PORT).sync();
+
+			// 等待连接关闭
+			f.channel().closeFuture().sync();
+		} finally {
+			// 缓慢关闭
+			group.shutdownGracefully();
+		}
+	}
+
+}
+
+```
 
 
 

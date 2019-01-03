@@ -22,7 +22,7 @@ SonarLint(Sonar) 代码质量管理
 
 在 eclipse -> Help -> Eclipse Marketplace 搜索 sonar 插件
 
-![1545733869811](C:\Users\37\AppData\Roaming\Typora\typora-user-images\1545733869811.png)
+![sonar.png](https://github.com/Cavielee/note/blob/master/pics/sonar.png?raw=true)
 
 
 
