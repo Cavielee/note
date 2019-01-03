@@ -133,4 +133,4 @@ mvn sonar:sonar ^
 
 在 Administrator -> Marketplace 中找到 Chinese packet 插件，安装后重启就可以中文客户端。
 
-![1545805196544](C:\Users\37\AppData\Roaming\Typora\typora-user-images\1545805196544.png)
+![sonar-chinese.png](https://github.com/Cavielee/note/blob/master/pics/sonar-chinese.png?raw=true)
