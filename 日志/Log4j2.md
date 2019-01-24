@@ -192,18 +192,89 @@ Log4j2 提供了许多 Appender，其中常用的有：
 
 * OnStartup：规则没有参数，如果当前日志文件比JVM的时间要迟，就会触发，生成新的日志。
 
-* SizeBased：有一个参数size，即文件日志大小。当日志文件到达这个大小的时候，就会生成新的日志文件。后缀可为KB、MB、GB。
+* SizeBased：有一个参数size，即文件日志大小。当日志文件到达这个大小的时候，就会生成新的日志文件，并将旧文件压缩。后缀可为KB、MB、GB。
 
 * TimeBased：是基于时间触发的周期性的保存日志，它有两个参数
   * interval：表示多久滚动一次。默认是1 hour。
   * modulate：布尔类型。modulate=true用来调整时间：比如现在是早上3am，interval是4，那么第一次滚动是在4am，接着是8am，12am...而不是7am。
 
-默认的文件生成规则DefaultRolloverStrategy。它有4个参数：
+压缩文件参数设置DefaultRolloverStrategy。它有4个参数：
 
 * fileIndex：文件索引。
-* min：文件最小数量，默认是1；
-* max：文件最大数量。一旦达到这个最大数，以前的文档就会在下一轮生成日志的时候删除。
+* min：压缩文件最小数量，默认是1；
+* max：压缩文件最大数量。一旦达到这个最大数，就会删除最旧的压缩文件。
 * compressionLevel：日志压缩级别。0-9，压缩效果依次增大。只对于压缩文件类型有效。文件的压缩格式支持的后缀名：`.gz`、`.zip`、`.bz2`、`.xz`
+
+
+
+### Layout
+
+日志输出格式
+
+
+
+**Log4j提供的layout有以下几种：**
+
+- org.apache.log4j.HTMLLayout（以HTML表格形式布局）  
+- org.apache.log4j.PatternLayout（可以灵活地指定布局模式）  
+- org.apache.log4j.SimpleLayout（包含日志信息的级别和信息字符串）
+- org.apache.log4j.TTCCLayout（包含日志产生的时间、线程、类别等等信息）
+
+
+
+**PatternLayout是我们以后推荐使用的，很灵活：**
+
+有个ConversionPattern属性，灵活配置输出属性：
+
+%m 输出代码中指定的消息；
+
+%M 输出打印该条日志的方法名；
+
+%p 输出优先级，即DEBUG，INFO，WARN，ERROR，FATAL；
+
+%r 输出自应用启动到输出该log信息耗费的毫秒数；
+
+%c 输出所属的类目，通常就是所在类的全名；
+
+%t 输出产生该日志事件的线程名；
+
+%n 输出一个回车换行符，Windows平台为”rn”，Unix平台为”n”；
+
+%d 输出日志时间点的日期或时间，默认格式为ISO8601，也可以在其后指定格式，比如：%d{yyyy-MM-dd HH:mm:ss,SSS}，输出类似：2002-10-18 22:10:28,921；
+
+%l 输出日志事件的发生位置，及在代码中的行数；
+
+
+
+### Filter
+
+配置日志的filter可以控制输出日志的类型。以ThresholdFilter为例，它是过滤日志级别的过滤器，允许通过的日志输出，不允许的不输出。它有三个参数：
+
+* level：配对的级别，即该级别的名称。
+* onMatch： 符合条件的级别。可填写： ACCEPT, DENY or NEUTRAL. 默认是NEUTRAL。
+* onMisMatch：不符合的级别。可填写： ACCEPT, DENY or NEUTRAL. 默认是DENY。
+
+
+
+例子：
+
+```xml
+<RollingFile name="RollingFileWarn" fileName="${sys:user.home}/logs/warn.log"
+             filePattern="${sys:user.home}/logs/$${date:yyyy-MM}/warn-%d{yyyy-MM-dd}-%i.log">
+    <Filters>
+				<ThresholdFilter level="WARN" />
+				<ThresholdFilter level="ERROR" onMatch="DENY"
+					onMismatch="NEUTRAL" />
+			</Filters>
+    <PatternLayout pattern="[%d{HH:mm:ss:SSS}] [%p] - %l - %m%n"/>
+    <Policies>
+        <TimeBasedTriggeringPolicy/>
+        <SizeBasedTriggeringPolicy size="100 MB"/>
+    </Policies>
+</RollingFile>
+```
+
+>  根Root限制了输出的日志级别，如果想要限制具体Appender的输出等级，可以通过ThresholdFilter进行限制。（如上述的限制了只接受WARN等级以上且排除ERROR等级信息）
 
 
 
