@@ -28,6 +28,8 @@ SonarLint(Sonar) 代码质量管理
 
 离线下载地址：https://binaries.sonarsource.com/SonarLint-for-Eclipse/releases/
 
+（`*.eclipse.site.*.zip`）
+
 ## 基本使用
 
 sonarlint 有5个视图，可以通过以下方法调出
