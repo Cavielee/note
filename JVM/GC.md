@@ -13,7 +13,7 @@ Java 内存运行区域分为程序计数器、虚拟机栈、本地方法栈、
 ## GC 种类
 
 * 新生代 GC （Minor GC / Young GC）：指发生在新生代的垃圾收集动作，因为 Java 对象大多在第一次 GC 就会被回收的特点，所以 Minor GC 非常频繁，一般回收速度也比较快。
-* 老年代 GC （Major GC / Full GC）：指发生在老年代的 GC，出现了 Major GC，经常会伴随至少一次的 Minor GC （因为Minor GC 后新生代不足以存储新的对象而老年代已不足以存放，因此老年代会执行 Full GC，但 Parallel Scavenge 收集器可以选择忽略 Minor GC 而直接进行 Major GC），一般 Major GC 花费的时间是 Minor GC 的十倍。
+* 老年代 GC （Major GC / Full GC）：指发生在老年代的 GC，出现了 Major GC，经常会伴随至少一次的 Minor GC （因为Minor GC 后新生代不足以存储新的对象而老年代也不足以存放，因此老年代会执行 Full GC，但 Parallel Scavenge 收集器可以选择忽略 Minor GC 而直接进行 Major GC），一般 Major GC 花费的时间是 Minor GC 的十倍。
 
 
 
@@ -51,7 +51,7 @@ objB = null;
 #### GC Roots对象
 
 * 虚拟机栈（栈帧中的本地变量表）中引用的对象
-* 方法去中类静态属性引用的对象
+* 方法区中类静态属性引用的对象
 * 方法区中常量引用的对象
 * 本地方法栈汇总JNI（即一般说的Native方法）引用的对象
 

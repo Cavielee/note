@@ -228,3 +228,380 @@ _source：文档资源
 
 
 > 更新文档可再一次 PUT，删除文档则通过 DELETE 指令。
+
+
+
+### 轻量级搜索
+
+```sh
+curl -X GET "localhost:9200/megacorp/employee/_search"
+```
+
+```json
+{
+   "took":      6,
+   "timed_out": false,
+   "_shards": { ... },
+   "hits": {
+      "total":      3,
+      "max_score":  1,
+      "hits": [
+         {
+            "_index":         "megacorp",
+            "_type":          "employee",
+            "_id":            "3",
+            "_score":         1,
+            "_source": {
+               "first_name":  "Douglas",
+               "last_name":   "Fir",
+               "age":         35,
+               "about":       "I like to build cabinets",
+               "interests": [ "forestry" ]
+            }
+         },
+         {
+            "_index":         "megacorp",
+            "_type":          "employee",
+            "_id":            "1",
+            "_score":         1,
+            "_source": {
+               "first_name":  "John",
+               "last_name":   "Smith",
+               "age":         25,
+               "about":       "I love to go rock climbing",
+               "interests": [ "sports", "music" ]
+            }
+         },
+         {
+            "_index":         "megacorp",
+            "_type":          "employee",
+            "_id":            "2",
+            "_score":         1,
+            "_source": {
+               "first_name":  "Jane",
+               "last_name":   "Smith",
+               "age":         32,
+               "about":       "I like to collect rock albums",
+               "interests": [ "music" ]
+            }
+         }
+      ]
+   }
+}
+```
+
+与指定一个文档 ID 不同，这次使用 `_search` （该命令返回某类型的所有文档）。
+
+* took：花费毫秒数；
+* timed_out：是否超时；
+* _shards：
+* hits：命中。total 为查询出的文档总数；hits 最多显示最新的10个文档。
+
+
+
+尝试下搜索姓氏为 ``Smith`` 的雇员。为此，我们将使用一个 *高亮* 搜索，很容易通过命令行完成。这个方法一般涉及到一个 *查询字符串* （_query-string_） 搜索，因为我们通过一个URL参数来传递查询信息给搜索接口：
+
+```sh
+curl -X GET "localhost:9200/megacorp/employee/_search?q=last_name:Smith"
+```
+
+仍然在请求路径中使用 `_search` 端点，并将查询本身赋值给参数 `q=` 。返回结果给出了所有的 Smith：
+
+```java
+{
+    "took": 9,
+    "timed_out": false,
+    "_shards": {
+        "total": 5,
+        "successful": 5,
+        "skipped": 0,
+        "failed": 0
+    },
+    "hits": {
+        "total": 1,
+        "max_score": 1,
+        "hits": [
+            {
+                "_index": "megacorp",
+                "_type": "employee",
+                "_id": "16",
+                "_score": 1,
+                "_source": {
+                    "first_name": "Cavie",
+                    "age": 100,
+                    "about": "My Introduction",
+                    "interests": [
+                        "sports",
+                        "music"
+                    ]
+                }
+            }
+        ]
+    }
+}
+```
+
+Query-string 搜索通过命令非常方便地进行临时性的即席搜索 ，但它有自身的局限性。Elasticsearch 提供一个丰富灵活的查询语言叫做 *查询表达式* ， 它支持构建更加复杂和健壮的查询。
+
+*领域特定语言* （DSL）， 指定了使用一个 JSON 请求（在请求体中附带查询表达式 Json）。
+
+```sh
+GET /megacorp/employee/_search
+{
+    "query" : {
+        "match" : {
+            "last_name" : "Smith"
+        }
+    }
+}
+```
+
+### 更复杂的查询
+
+使用过滤器 *filter* ，它支持高效地执行一个结构化查询：
+
+```sh
+GET /megacorp/employee/_search
+{
+    "query" : {
+        "bool": {
+            "must": {
+                "match" : {
+                    "last_name" : "smith" 
+                }
+            },
+            "filter": {
+                "range" : {
+                    "age" : { "gt" : 30 } 
+                }
+            }
+        }
+    }
+}
+```
+
+`range` *过滤器* ， 它能找到年龄大于 30 的文档，其中 `gt` 表示 *大于(_great than)*。
+
+
+
+### 全文搜索
+
+Elasticsearch 默认按照相关性得分排序，即每个文档跟查询的匹配程度。
+
+例如查询如下：
+
+```json
+GET /megacorp/employee/_search
+{
+    "query" : {
+        "match" : {
+            "about" : "rock climbing"
+        }
+    }
+}
+```
+
+结果：
+
+```json
+{
+   ...
+   "hits": {
+      "total":      2,
+      "max_score":  0.16273327,
+      "hits": [
+         {
+            ...
+            "_score":         0.16273327, 
+            "_source": {
+               "first_name":  "John",
+               "last_name":   "Smith",
+               "age":         25,
+               "about":       "I love to go rock climbing",
+               "interests": [ "sports", "music" ]
+            }
+         },
+         {
+            ...
+            "_score":         0.016878016, 
+            "_source": {
+               "first_name":  "Jane",
+               "last_name":   "Smith",
+               "age":         32,
+               "about":       "I like to collect rock albums",
+               "interests": [ "music" ]
+            }
+         }
+      ]
+   }
+}
+```
+
+Elasticsearch 会查询所有文档中 about 包含 "rock climbing" （包含指其中一个词或全部词都属于），并根据匹配程度得出评估得分，匹配度越高，得分越高。Elasticsearch中的 *相关性* 概念非常重要，也是完全区别于传统关系型数据库的一个概念，数据库中的一条记录要么匹配要么不匹配。
+
+
+
+### 短语搜索
+
+如果希望查询的词语匹配以短语的形式，而不是以单词的形式，可以使用 match_phrase 的查询：
+
+下面例子则会匹配出现 rock climbling 短语的文档。
+
+```json
+GET /megacorp/employee/_search
+{
+    "query" : {
+        "match_phrase" : {
+            "about" : "rock climbing"
+        }
+    }
+}
+```
+
+
+
+### 高亮查询
+
+由于很多时候查询出来的结果需要给用户知道查询匹配的是那一部分，因此可以使用高亮查询。（返回结果与之前一样，与此同时结果中还多了一个叫做 `highlight` 的部分。这个部分包含了 `about` 属性匹配的文本片段，并以 HTML 标签 `<em></em>` 封装）
+
+```sh
+GET /megacorp/employee/_search
+{
+    "query" : {
+        "match_phrase" : {
+            "about" : "rock climbing"
+        }
+    },
+    "highlight": {
+        "fields" : {
+            "about" : {}
+        }
+    }
+}
+```
+
+```json
+{
+   ...
+   "hits": {
+      "total":      1,
+      "max_score":  0.23013961,
+      "hits": [
+         {
+            ...
+            "_score":         0.23013961,
+            "_source": {
+               "first_name":  "John",
+               "last_name":   "Smith",
+               "age":         25,
+               "about":       "I love to go rock climbing",
+               "interests": [ "sports", "music" ]
+            },
+            "highlight": {
+               "about": [
+                  "I love to go <em>rock</em> <em>climbing</em>" 
+               ]
+            }
+         }
+      ]
+   }
+}
+```
+
+
+
+### 聚合
+
+Elasticsearch 有一个功能叫聚合（aggregations），允许我们基于数据生成一些精细的分析结果。聚合与 SQL 中的 `GROUP BY` 类似但更强大。
+
+举个例子，挖掘出雇员中最受欢迎的兴趣爱好：
+
+```sh
+GET /megacorp/employee/_search
+{
+  "aggs": {
+    "all_interests": {
+      "terms": { "field": "interests" }
+    }
+  }
+}
+```
+
+```json
+{
+   ...
+   "hits": { ... },
+   "aggregations": {
+      "all_interests": {
+         "buckets": [
+            {
+               "key":       "music",
+               "doc_count": 2
+            },
+            {
+               "key":       "forestry",
+               "doc_count": 1
+            },
+            {
+               "key":       "sports",
+               "doc_count": 1
+            }
+         ]
+      }
+   }
+}
+```
+
+可以配合查询字符串来从匹配到的文档中分析：
+
+```json
+GET /megacorp/employee/_search
+{
+  "query": {
+    "match": {
+      "last_name": "smith"
+    }
+  },
+  "aggs": {
+    "all_interests": {
+      "terms": {
+        "field": "interests"
+      }
+    }
+  }
+}
+```
+
+聚合还支持分级汇总 。比如，查询特定兴趣爱好员工的平均年龄：
+
+```json
+GET /megacorp/employee/_search
+{
+    "aggs" : {
+        "all_interests" : {
+            "terms" : { "field" : "interests" },
+            "aggs" : {
+                "avg_age" : {
+                    "avg" : { "field" : "age" }
+                }
+            }
+        }
+    }
+}
+```
+
+
+
+## 分布式特性
+
+Elasticsearch 尽可能地屏蔽了分布式系统的复杂性。这里列举了一些在后台自动执行的操作：
+
+- 分配文档到不同的容器 或 *分片* (shard)中，文档可以储存在一个或多个节点中
+- 按集群节点来均衡分配这些分片，从而对索引和搜索过程进行负载均衡
+- 复制每个分片以支持数据冗余，从而防止硬件故障导致的数据丢失
+- 将集群中任一节点的请求路由到存有相关数据的节点
+- 集群扩容时无缝整合新节点，重新分配分片以便从离群节点恢复
+
+
+
+
