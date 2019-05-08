@@ -944,7 +944,7 @@ private void handleRegistration(InstanceInfo info, int leaseDuration,
 
 ### 服务实例类配置
 
-参数均已 eureka.instance 为前缀。
+参数均已 `eureka.instance` 为前缀。
 
 
 
@@ -954,7 +954,41 @@ private void handleRegistration(InstanceInfo info, int leaseDuration,
 
 所有的配置信息都通过 EurekaInstanceConfigBean 进行加载，但在注册的时候，还是会包装秤 InstanceInfo 对象发送到 Eureka Server。
 
-在 InstanceInfo 中，metadata（Map）用来存储自定义的元数据信息，
+在 InstanceInfo 中，metadata（Map）用来存储自定义的元数据信息。因此可以通过 `eureka.instance.metadataMap.<key>=value` 对自定义元数据配置。
 
 
+
+* 实例名配置：instanceInfo 中的 instanceId 参数，它是区分同一服务中不同实例的唯一标识。原生的 Netflix Eureka 采用主机名作为实例名，但由于可能同一主机启动多个服务的问题，因此 Spring Cloud Eureka 采用了 `${spring.cloud.hostname}:${spring.application.name}:${spring.application.instance_id}:${server.port}` 作为默认实例名。如果想要自定义实例名，可以通过 `eureka.instance.instanceId` 参数修改。
+
+
+
+> 在同一台主机启动多个服务时，需要注意修改端口 server.port，否则会冲突。也可以通过设置 server.port=0 或者使用随机数 server.port=${random.int[10000,19999]} 来到达随机端口
+
+
+
+* 端点配置：instanceInfo 中有三个 URL 的配置信息，分别是 `homePageUrl`、`statusPageUrl`、`healthCheckUrl`，分别对应主页的 URL、状态也的 URL、健康检查的 URL。其中，状态也和健康检查的 URL 在 Spring Cloud Eureka 中默认使用了 spring-boot-actuator 模块提供的 `/actuator/info` 端点和 `/actuator/health` 端点。`/actuator/health` 端点用于发送 Eureka Client状态给服务注册中心（要保证服务注册中心可以访问该地址，否则无法不会改变状态）。`/actuator/info`用于在服务注册中心面板点击服务实例时跳转到服务实例提供的信息接口。
+
+可以通过 `eureka.instance.statusPageUrlPath=xxx/info` 参数来设置上述三个 URL 地址。
+
+> 由于默认使用相对路径来配置，并且使用 HTTP 方式访问。如果要使用 HTTPS 方式访问则需要将参数 URL 修改为绝对路径 https://xxx/info 这样子。
+
+
+
+* 健康监测：Eureka Client 使用的是心跳包的方式发送给 Eureka Server，告诉注册中心该服务实例还存活，一旦心跳终止一段时间，就会从服务注册中心中被剔除。但服务实例并不是根据其是否与注册中心连接而判断其存活，而是根据其服务提供是否正常来判断（可能服务所需要的其他外部依赖资源失效，如数据库、缓存、消息代理等）。因此 Eureka Client 根据上面提到的 `/actuator/health` 端点告诉服务端其服务状态。
+
+
+
+* 其他配置：
+
+| 参数名                           | 说明                                                         | 默认值 |
+| -------------------------------- | ------------------------------------------------------------ | ------ |
+| preferIpAddress                  | 是否优先使用IP地址作为主机名的标识号                         | false  |
+| leaseRenewalIntervalInSeconds    | Eureka 客户端向服务端发送心跳的时间间隔，单位为秒            | 30     |
+| leaseExpirationDurationInSeconds | Eureka 服务端在收到最后一次心跳之后等待的时间上限，单位为秒，超过该时间之后服务端会将服务实例从服务清单中剔除，从而禁止服务调用请求被发送到该 | 90     |
+| nonSecurePort                    | 非安全的通信端口（HTTP）                                     | 80     |
+| securePort                       | 安全的通信短偶（HTTPS）                                      | 443    |
+| securePortEnabled                | 是否启用安全的通信端口                                       |        |
+| nonSecurePortEnabled             | 是否启用非安全的通信端口                                     | true   |
+| appname                          | 服务名，默认去 spring.application.name 的配置值，如果没有则为 unknow |        |
+| hostname                         | 主机名，不配置的时候将根据操作系统的主机名来获取             |        |
 
