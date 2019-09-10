@@ -1,0 +1,153 @@
+Java 中常常需要对对象进行复制拷贝，而拷贝分成浅拷贝、深拷贝。
+
+为了方便下面的讲解，定义了一下对象：
+
+```java
+public class Person {
+    int age;
+    String name;
+    Address address;
+    
+    public Person(int age, String name, Address address) {
+        this.age = age;
+        this.name = name;
+        this.address = address;
+    }
+    // 省略get/set
+}
+public class Address {
+    String area;
+    
+    public Address (String area) {
+        this.area = area;
+    }
+    // 省略get/set
+}
+```
+
+
+
+## 浅拷贝
+
+将要拷贝的对象的引用赋值给新的变量。例如：
+
+```java
+Address address = new Address("GZ")
+Person person1 = new Person(20, "Cavie", address);
+Person person2 = person1; // 引用变量指向了person1
+person1.setAge(21); // person2同时也会修改
+```
+
+可见浅拷贝后，原来的对象发生变化，拷贝后的对象也会随之变化。
+
+常见的集合对象 `Map.putAll()`、`List.addAll()` 等都是浅拷贝。
+
+
+
+浅拷贝规则：
+
+- 基本类型：例如 int,float等，会复制其值。（因此拷贝后，原来的值改变，也不会影响拷贝后的值）
+- 对象：如果变量是一个实例对象，则拷贝其地址引用，也就是说此时新对象与原来对象是公用该实例变量。
+-  String：若变量为String字符串，则拷贝其地址引用。但是在修改时，它会从字符串池中重新生成一个新的字符串，原有字符串对象保持不变。
+
+
+
+## Cloneable
+
+Java 默认提供克隆方法 `clone()`，但克隆的对象必须实现 `Cloneable` 标识接口，否则会报 `ClassNotSupportedException` 。
+
+`clone()` 方法默认实现是浅拷贝。
+
+
+
+## 深拷贝
+
+深拷贝与浅拷贝的不同处是：不是单纯的拷贝对象的地址引用，而是创建一个新的对象，并拷贝对象中的值。
+
+
+
+### 遍历复制
+
+可以通过逻辑实现深拷贝：
+
+1. new 一个新的对象
+2. 将要拷贝的对象中的属性值赋值到新的对象
+
+
+
+这种方法麻烦，若集合对象有多少个值，就要遍历多少次。
+
+
+
+### Clone方法
+
+需要覆盖原有的 `clone()` 方法：
+
+```java
+public class Address {
+    // 省略，如上
+    
+    @Override  
+    public Object clone() {  
+        Address addr = null;  
+        try{  
+            addr = (Address)super.clone();  
+        }catch(CloneNotSupportedException e) {  
+            e.printStackTrace();  
+        }  
+        return addr;  
+    }  
+}
+public class Person {
+    // 省略，如上
+    
+    @Override  
+    public Object clone() {  
+        Person person = null;  
+        try{  
+            person = (Person)super.clone();   //浅复制  
+        }catch(CloneNotSupportedException e) {  
+            e.printStackTrace();  
+        }  
+        person.address = (Address)address.clone();   //深度复制  
+        return person;  
+    }  
+}
+```
+
+由于 Person 对象中含有 Address 对象，如果是默认的 `clone()` 只会将 Address 对象浅拷贝在 Person 中，因此需要将 Person 中的对象也实现 `clone()` 方法，这样就可以实现 Person 的深拷贝。
+
+
+
+### 序列化
+
+使用序列化将对象写成二进制流，再读取成对象，此时读取的对象是一个新的对象。序列化需要实现 `Serializable` 接口
+
+序列化工具：
+
+```java
+public class CloneUtils {
+    public static <T extends Serializable> T clone(T obj) {
+        T cloneObj = null;
+        try {
+            //写入字节流
+            ByteArrayOutputStream out = new ByteArrayOutputStream();
+            ObjectOutputStream obs = new ObjectOutputStream(out);
+            obs.writeObject(obj);
+            obs.close();
+
+            //分配内存，写入原始对象，生成新对象
+            ByteArrayInputStream ios = new ByteArrayInputStream(out.toByteArray());
+            ObjectInputStream ois = new ObjectInputStream(ios);
+            //返回生成的新对象
+            cloneObj = (T) ois.readObject();
+            ois.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return cloneObj;
+    }
+}
+```
+
+同样序列化拷贝对象时，如果对象包含对象，包含的对象同样也需要实现 `Serializable` 接口。
