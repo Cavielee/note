@@ -98,6 +98,10 @@ Logback 实际为 Log4j 的改良版。其性能可能有 Log4j 的10倍。logba
 * ConsoleAppender 把日志输出到控制台，有以下子节点：
   * `<encoder>`：对日志进行格式化。（具体参数稍后讲解 ）
   * `<target>`：字符串System.out(默认)或者System.err（区别不多说了）
+  * `<filter>`：一般使用 `ch.qos.logback.classic.dilter.LevelFilter` 过滤器
+    * `<level>`：日志级别限制
+    * `<onMatch>`：日志会被立即处理，不再经过剩余过滤器
+    * `<level>`：日志将立即被抛弃不再经过其他过滤器
 
 例如：
 
@@ -220,7 +224,7 @@ Logback 实际为 Log4j 的改良版。其性能可能有 Log4j 的10倍。logba
 子节点 `<lohger>` 用来设置某一个包或具体的某一个类的日志打印级别、以及指定 `<appender>`。`<logger>` 仅有一个name属性，一个可选的level和一个可选的addtivity属性。可以包含零个或多个 `<appender-ref> ` 元素，标识这个appender将会添加到这个logger
 
 * name: 用来指定受此logger约束的某一个包或者具体的某一个类。
-* level: 用来设置打印级别，大小写无关：TRACE, DEBUG, INFO, WARN, ERROR, ALL和OFF，还有一个特俗值INHERITED或者同义词NULL，代表强制执行上级的级别。 如果未设置此属性，那么当前logger将会继承上级的级别。
+* level: 用来设置打印级别，大小写无关：TRACE, DEBUG, INFO, WARN, ERROR, ALL和OFF，还有一个特殊值INHERITED或者同义词NULL，代表强制执行上级的级别。 如果未设置此属性，那么当前logger将会继承上级的级别。
 * addtivity: 是否向上级logger传递打印信息。默认是true。同 `<logger>` 一样，可以包含零个或多个`<appender-ref>` 元素，标识这个appender将会添加到这个logger。
 
 
