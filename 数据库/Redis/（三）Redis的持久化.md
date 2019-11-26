@@ -36,13 +36,15 @@ save 开头的一行就是持久化配置，可以配置多个条件（每行配
 
 “save 300 10”表示5分钟（300秒）内至少10个键被更改则进行快照。
 
-> 也可以通过 **BGSAVE** 命令手工触发 RDB 快照保存。
+> 也可以通过 **BGSAVE** 命令手动触发 RDB 快照保存。
 
 #### 配置快照文件目录
 
 配置dir指定rdb快照文件的位置
 
-```
+通过修改redis.conf
+
+```sh
 # Note that you must specify a directory here, not a file name.
 dir ./
 ```

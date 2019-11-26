@@ -4,12 +4,20 @@
 
 
 
+或者通过wget下载
+
+```sh
+wget http://download.redis.io/releases/redis-5.0.5.tar.gz
+```
+
+
+
 ## 安装
 
 **（一）解压**
 
-```
-tar -zxf redis-5.0.0.tar.gz
+```sh
+tar -zxf redis-5.0.5.tar.gz
 ```
 
 
@@ -18,7 +26,7 @@ tar -zxf redis-5.0.0.tar.gz
 
 如果是 centos 则已自带
 
-```
+```sh
 yum install gcc-c++
 ```
 
@@ -26,8 +34,9 @@ yum install gcc-c++
 
 **（三）安装**
 
-```
-make install PREFIX=/usr/local/redis
+```sh
+mv redis-5.0.5 /usr/local/
+make install PREFIX=/usr/local/redis-5.0.5
 ```
 
 
@@ -36,8 +45,8 @@ make install PREFIX=/usr/local/redis
 
 ### 前端启动
 
-```java
-./redis-server
+```sh
+/usr/local/redis-5.0.5/bin/redis-server
 ```
 
 
@@ -58,19 +67,19 @@ make install PREFIX=/usr/local/redis
 
 **（一）复制redis.conf**
 
-```
-cp redis-5.0.0/redis.conf /usr/local/redis/bin
+```sh
+cp /usr/local/redis-5.0.5/redis.conf /usr/local/redis-5.0.5/bin
 ```
 
 **（二）修改redis.conf**
 
-```
+```sh
 将redis.conf中daemonize改为yes
 ```
 
 **（三）后台启动**
 
-```
+```sh
 ./redis-server redis.conf
 ```
 

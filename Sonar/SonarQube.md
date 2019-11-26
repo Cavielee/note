@@ -103,9 +103,11 @@ mysql> FLUSH PRIVILEGES;
 
 将文件传到 Linux 上并解压
 
-`sudo unzip -q sonarqube-7.5.zip -d /usr/local`
+`sudo unzip -q sonarqube-7.7.zip -d /usr/local`
 
 
+
+**配置为自启动服务**：
 
 Create the file /etc/init.d/sonar with this content:
 
@@ -127,7 +129,7 @@ Create the file /etc/init.d/sonar with this content:
 # Description: SonarQube system (www.sonarsource.org)
 ### END INIT INFO
  
-/usr/local/sonar $*
+/usr/bin/sonar $*
 ```
 
 
@@ -135,7 +137,7 @@ Create the file /etc/init.d/sonar with this content:
 Register SonarQube at boot time (RedHat, CentOS, 64 bit):
 
 ```bash
-sudo ln -s /usr/local/sonarqube-7.5/bin/linux-x86-64/sonar.sh /usr/bin/sonar
+sudo ln -s /usr/local/sonarqube-7.7/bin/linux-x86-64/sonar.sh /usr/bin/sonar
 sudo chmod 755 /etc/init.d/sonar
 sudo chkconfig --add sonar
 ```
@@ -158,7 +160,7 @@ $ useradd sonarUser
 # 为用户创建密码
 $ passwd sonarUser
 # 修改sonar的目录和用户组为sonarUser
-$ chown -R sonarUser:sonarUser sonarqube-7.5
+$ chown -R sonarUser:sonarUser sonarqube-7.7
 # 重新启动sonar
 $ ./sonar.sh start
 ```
@@ -238,6 +240,7 @@ sonar.web.context=/sonarqube
         <sonar.host.url>http://127.0.0.1:9000/sonarqube</sonar.host.url>
     </properties>
 </profile>
+
 <mirrors>
     <mirror>
         <id>alimaven</id>
