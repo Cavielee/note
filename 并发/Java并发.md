@@ -141,7 +141,9 @@ private native void start0();// 注意这里
 
 有关Thread本地方法：
 
-![ThreadC文件](C:\Users\63190\Desktop\pics\ThreadC文件.jpg)
+![ThreadC文件](https://raw.githubusercontent.com/Cavielee/notePics/main/ThreadC%E6%96%87%E4%BB%B6.jpg?token=AFSL4X5YOHVZVUMPHQ7UX3DBL4XGS)
+
+
 
 实际本地方法start0()执行过程如下：
 
