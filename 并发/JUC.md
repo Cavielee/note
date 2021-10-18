@@ -2127,6 +2127,14 @@ BlockingQueue扩展了Queue，增加了可阻塞的插入和获取等操作。�
 
 
 
+### ConcurrentHashMap 和 Hashtable 的区别
+
+HashTable 通过为每个方法增加 Synchronized 使用方法是线程安全的。
+
+而 ConcurrentHashMap 在 JDK1.8 前是通过使用一个分段锁（ReentrantLock）的形式；JDK1.8 以后则采用 CAS + Synchronized 的方式，提高了并发效率。
+
+
+
 ## CopyOnWriteArrayList(通过副本解决)
 
 “写入时复制（Copy-On-Write）”容器的线程安全性在于，只要正确地发布一个事实不可变的对象，那么在访问该对象时就不再需要进一步的同步。

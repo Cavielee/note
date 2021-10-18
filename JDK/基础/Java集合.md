@@ -81,47 +81,34 @@ Vector 实际是线程安全的 ArrayList，其实际是线程安全版的 Array
 
 
 
+### 线程安全问题
+
+由于 Vector 的操作都使用了 Synchronized 修饰，因此这些操作都是线程安全的。
+
+但在以下情况时，Vector 并不是线程安全的：
+
+1. 复合操作。
+
+   ```
+   线程A					线程B
+   读取Vector
+   					修改Vector
+   根据读取值修改Vector
+   ```
+
+   像线程A这种对 Vector 执行复合操作，在多线程并发情况下是线程不安全的，因为 Vector 只保证单个内部操作线程安全，并不能保证外部多个操作线程安全。因此需要在外部使用同步机制使得复合操作线程安全。
+
+   并发单个操作的时候确实是线程安全（因为加了 Synchronized），但在复合操作时就不能保证。如 Iterator 遍历时同时修改 Vector，则会抛出 ConcurrentModifyException，因为遍历和修改操作是复合操作。
+
+2. 遍历操作。
+
+   使用 Vector 的 Iterator 遍历时，如果其他线程并发修改（使得modCount变化），此时遍历会抛 ConcurrentModifyException。
+
+   可以采用外部同步机制，或者使用 foreach 方式遍历。因为 foreach 是 JDK1.8 的特性，其提供了 Lambda，foreach 接口是 List 内部提供的遍历方式，因此 Vector 会对 foreach 方法加上 Synchronized，从而保证遍历是线程安全的。
+
 # Set
 
 Set 存储的对象是无序的，不可重复的。无序意味着插入的顺序和存储的顺序不一致。
-
-
-
-## 2.HashMap 和 Hashtable 的区别有哪些
-
-1. HashMap 是线程不安全的，HashTable 通过在 HashMap 的基础上为每一个方法添加 Synchronized 从而变成线程安全
-2. HashMap 允许 null 作为 key，HashTable 不允许 key 为 null
-
-
-
-## 4.ConcurrentHashMap 和 Hashtable 的区别
-
-1. HashTable 采用 Synchronized 把整个 table[] 锁住，而ConcurrentHashMap 在 JDK1.8 前是通过使用一个分段锁（ReentrantLock）的形式；JDK1.8 以后则采用 CAS + Synchronized 的方式，提高了并发效率。
-
-
-
-## 8.Comparable 接口和 Comparator 接口有什么区别？
-
-实现 Comparable 接口，表示该类是可比较类，需要修改源码，手动实现 compare() 方法
-
-实现 Comparator 接口，表示该类是比较器，把比较方法实现封装到该比较器类中，其他类想要使用该比较器的比较方法，只需要传入比较器即可。
-
-
-
-## 9.Java 集合的快速失败机制 “fail-fast”
-
-它是 java 集合的一种错误检测机制，当进行迭代集合时，如果其他线程对集合进行了结构上的改变操作时，有可能会产生 fail-fast 机制。
-
-**例如 ：**假设存在两个线程（线程 1、线程 2），线程 1 通过 Iterator 在遍历集合 A 中的元素，在某个时候线程 2 修改了集合 A 的结构（是结构上面的修改，而不是简单的修改集合元素的内容），那么这个时候程序就会抛出 ConcurrentModificationException 异常，从而产生 fail-fast 机制。
-
-**原因：** 集合在发生结构上的改变操作时，会对 modCount 变量进行+1。
-
-迭代器在每一次遍历一个元素时都会判断 modCount 变量是否变化，如果变化了则表示遍历阶段，集合已经发生结构上的改变，就会抛出异常。
-
-**解决办法：**
-
-1. 在遍历过程中，所有涉及到改变 modCount 值得地方全部加上 synchronized；
-2. 使用 CopyOnWriteArrayList 来替换 ArrayList。
 
 
 
@@ -347,4 +334,11 @@ final Entry<K,V> getEntry(Object key) {
 
 
 ### JDK1.8
+
+
+
+## HashMap 和 Hashtable 区别
+
+1. HashMap 是线程不安全的，HashTable 通过在 HashMap 的基础上为每一个方法添加 Synchronized 从而变成线程安全。
+2. HashMap 允许 null 作为 key，HashTable 不允许 key 为 null
 

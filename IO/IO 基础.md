@@ -131,7 +131,7 @@ public static void main(String[] args) throws IOException {
 
 ### NIO
 
-实际上是一个多路复用 IO模型。其主要有三个组件：
+实际上是一个多路复用 IO 模型。其主要有三个组件：
 
 #### 缓冲区 Buffer
 
@@ -153,7 +153,7 @@ Buffer 提供以下变量记录缓冲区内部状态的变化。
 
 三个属性存在相对大小关系：0 <= position <= limit <= capacity。
 
-```
+```java
 FileInputStream fin = new FileInputStream("E://test.txt");
 //创建文件的操作管道
 FileChannel fc = fin.getChannel();
@@ -180,7 +180,7 @@ buffer.clear();
 
 BIO 通信是通过流的形式（InputStream、OutputStream），每次通信只能读或者写，如读取 read() 会阻塞等待，直到读取完流中所有数据才能处理下一次读写。
 
-NIO 则通过 Channel 的形式，实际上是对 InputStream 和 OutputStream的模拟。Channel 的读是通过将数据读取到缓冲区 Buffer，然后程序直接读取 Buffer 当前可读数据；程序写入数据，只需要将数据写入到 Buffer，Channel 的写会将 Buffer 的数据发送。
+NIO 则通过 Channel 的形式，实际上是对 InputStream 和 OutputStream 的模拟。通过 Channel 读取，从 Channel 读取数据到缓冲区 Buffer，然后程序直接读取 Buffer 当前可读数据；通过 Channel 写入，将数据从 Channel 写入到缓冲区 Buffer，硬件设备将缓冲区 Buffer 数据写出。
 
 因此读取时，程序只需读取当前 Buffer 可读的数据，不需要像 BIO 那样阻塞等待数据全部从流中读取完；写入时，程序只需要把数据写入到 Buffer 中，不需要像 BIO 一样阻塞等待数据全部写入完到流中。
 
@@ -201,17 +201,15 @@ Channel 包括以下类型：
 
 #### 多路复用器 Selector
 
-对于每一个客户端的连接都会创建一个 Channel，并将 Channel 会注册到 Selector，需要声明任何操作都是以事件作为驱动，如客户端连接上了服务端就会触发 SelectionKey.OP_CONNECT 事件，
+对于每一个客户端的连接都会创建一个 Channel，并将 Channel 会注册到 Selector，任何操作都是以事件作为驱动，如客户端连接上了服务端就会触发 SelectionKey.OP_CONNECT 事件。
 
-实际上可以理解为一个单线程，不断轮询
+实际上可以理解为一个单线程，不断轮询各个通道，看是否有通道准备好（可连接、可读、可写等事件），提高了响应，并把请求任务分发给处理线程。不会出现 BIO 那样，如果同一时间客户端请求过多要等待服务端处理完才能接受新的请求。NIO 统一的把所有连接请求作为事件注册到 Selector 上，使得请求不会阻塞在外面，接受所有的接入请求，并作为事件有序（会为每个事件派发一个 SelectionKey）的处理。（同步非阻塞）
 
--  （实际类似于一个线程）， 不断的轮询各个通道，看是否有通道准备好（可连接、可读、可写等事件），提高了响应，并把请求任务分发给处理线程。不会出现 BIO 那样，如果同一时间客户端请求过多要等待服务端处理完才能接受新的请求。NIO 统一的把所有连接请求作为事件注册到 Selector 上，使得请求不会阻塞在外面，接受所有的接入请求，并作为事件有序（会为每个事件派发一个 SelectionKey）的处理。（同步非阻塞）
-- 
+
 
 #### 非阻塞体现
 
-1. 读取/写入都是面向缓冲区 Buffer，不需要阻塞等待流传输过程。
-2. 服务端不需要阻塞等待一个客户端请求处理完后才能接收下一个客户端请求，通过 Selector 可以接收多个客户端请求，多个客户端可以不停的往缓冲区写入，当缓冲区数据准备好了，会注册一个事件（可读、可写等）到 Selector，服务端收到后就会进行处理。
+服务端不需要阻塞等待一个客户端的请求处理完后才能处理其他请求，服务端通过多路复用器不断轮询所有通道，看是否有事件（可读、可写、可连接等）可以处理。
 
 
 
