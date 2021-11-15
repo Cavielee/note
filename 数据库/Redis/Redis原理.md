@@ -692,7 +692,7 @@ auto-aof-rewrite-min-size 64mb
 
 | 参数                      | 说明                                                         |
 | ------------------------- | ------------------------------------------------------------ |
-| no-appendfsync-on-rewrite | 默认为no。对于aof 重写或者写入 rdb 文件的时候，如果执行写操作，此时对于everysec 和 always 的 aof 模式来说，当执行 fsync 会造成阻塞过长时间，从而影响写操作。<br/>建议设置为 yes，表示 rewrite 期间对新的写操作不会立刻同步到 AOF 文件中，而是暂时存在内存中，等 rewrite 完成后再写入。 |
+| no-appendfsync-on-rewrite | 默认为no。对于aof 重写或者写入 rdb 文件的时候，如果执行写操作，此时对于everysec 和 always 的 aof 模式来说，由于执行 fsync 会造成阻塞过长时间，因此会影响写操作。<br/>建议设置为 yes，表示 rewrite 期间对新的写操作不会立刻同步到 AOF 文件中，而是暂时存在内存中，等 rewrite 完成后再写入。 |
 | aof-load-truncated        | 由于 redis 出现异常宕机时，正在 fsync aof 文件，从而导致 aof 文件不完整。当redis 启动的时候，aof 文件的数据被载入内存。<br/>默认设置为 yes，当截断的aof 文件被导入的时候，会自动发布一个log 给客户端然后load。如果设置为 no，用户必须手动redis-check-aof 修复 AOF 文件才可以。 |
 
 

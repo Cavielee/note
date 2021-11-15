@@ -241,8 +241,8 @@ typedef struct redisObject {
     unsigned type:4; /* 对象的类型，包括：OBJ_STRING、OBJ_LIST、OBJ_HASH、OBJ_SET、OBJ_ZSET */
     unsigned encoding:4; /* 具体的数据结构*/
     unsigned lru:LRU_BITS; /* 24 位，对象最后一次被命令程序访问的时间，与内存回收有关*/
-    int refcount; /* 引用计数。当refcount 为0 的时候，表示该对象已经不被任何对象引用，则可以进行垃圾回收了
-*/
+    /* 引用计数。当refcount 为0 的时候，表示该对象已经不被任何对象引用，则可以进行垃圾回收了 */
+    int refcount; 
     void *ptr; /* 指向对象实际的数据结构*/
 } robj;
 ```

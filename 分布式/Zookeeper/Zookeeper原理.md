@@ -116,13 +116,17 @@ EPHEMERAL_SEQUENTIAL：临时顺序节点。
 
 
 
-### 未完善
+### 容器节点
 
-CONTAINER：当子节点都被删除后， Container 也随即删除
+CONTAINER：当子节点都被删除后， Container 节点也会随即删除。
 
-PERSISTENT_WITH_TTL：超过 TTL 未被修改，且没有子节点
+### 限时节点
 
-PERSISTENT_SEQUENTIAL_WITH_TTL：客户端断开连接后不会自动删除 Znode ，如果该 Znode 没有子 Znode 且在给定 TTL 时间内无修改，该 Znode 将会被删除； TTL 单位是毫秒，必须大0 且小于或等于EphemeralType.MAX_TTL
+PERSISTENT_WITH_TTL：超过 TTL 未被修改，且没有子节点，就会被删除
+
+PERSISTENT_SEQUENTIAL_WITH_TTL：客户端断开连接后不会自动删除 Znode ，当该 Znode 没有子 Znode 且在给定 TTL 时间内无修改，该 Znode 将会被删除；
+
+> TTL 单位是毫秒，必须大0 且小于或等于EphemeralType.MAX_TTL
 
 
 
@@ -159,10 +163,10 @@ schema 用 `auth` 授权表示只有认证后的用户才可以访问，那么�
 
 auth 设置用户密码是明文。
 
-```shell
-// 添加 auth 用户，格式为：用户名/用户密码
+```sh
+# 添加 auth 用户，格式为：用户名/用户密码
 addauth digest user:password
-// 设置用户 user 的 acl 权限
+# 设置用户 user 的 acl 权限
 setAcl /test auth:user:crdwa
 ```
 
@@ -266,27 +270,48 @@ watcher 类型分为两种：
 
 ## 分布式锁
 
-`zookeeper` 基于 `watcher` 机制和 `znode` 的有序节点可以很好的实现分布式锁。
+**方案一**
 
-首先创建一个 `/test/lock` 父节点表示一把锁，尽量是持久节点（PERSISTENT类型），每个尝试获取这把锁的客户端，在 `/test/lock` 父节点下创建临时顺序子节点。
+1. 通过对指定路径创建一个临时节点来表示锁。
+   * 由于节点只会创建一次，其他节点则会创建失败，因此确保了只会有一个线程获取到锁。
+   * 临时节点确保了即使手动释放锁失败（删除节点）也会在会话结束时自动释放锁，从而防止死锁。
+2. 创建锁失败的客户端会对节点注册一个 Watch 进行监听。
+3. 当节点被删除时（锁释放），会发送事件通知对应的所有 Watch。
+4. 客户端收到节点删除事件后会进行重新竞争锁（即重新发起节点创建）。
 
-逻辑如下：
+缺点：
 
-1. 首先创建一个节点代表锁，如 `/user/regist/lock` （一般才用持久化节点，因为锁会经常用）
-2. 客户端获取锁，实际是向锁节点添加一个临时有序节点。
-3. 通过规定序号最小的节点获得锁。
+由于只会有一个线程获取到锁，而其他线程都获取失败。一旦锁释放后，所有线程都会收到事件而去争取锁，即 ”惊群效应“，导致不必要的系统资源浪费。
 
-由于序号的递增性，通过规定序号最小的节点即获得锁。
+**方案二**
 
-例如：客户端来获取锁，在 `/test/lock` 节点下创建节点为`/test/lock/seq-00000001`，它是最小的所以它优先拿到了锁，其它节点等待通知再次获取锁。`/test/lock/seq-00000001` 执行完自己的逻辑后删除节点释放锁。
+基于方案一的优化：
 
-**那么节点`/test/lock/seq-00000002`想要获取锁等谁的通知呢？**
+1. 通过对指定路径创建一个临时有序节点来表示锁。
+   * 临时节点确保了即使手动释放锁失败（删除节点）也会在会话结束时自动释放锁，从而防止死锁。
+   * 节点有序的机制确保了按照节点的序号依次获得锁资源。
+2. 规定当前路径下序号最小的节点为获得锁的节点，其他序号的节点监听紧跟其前面序号的节点。
+3. 当节点被删除时（锁释放），会发送事件通知紧跟其后面序号的节点。
+4. 客户端收到节点删除事件后（只会有一个客户端获取到该事件），意味着此时获取到了锁资源，可以进行操作。
 
-这里我们让`/test/lock/seq-00000002`节点监听`/test/lock/seq-00000001`节点，一旦`/test/lock/seq-00000001`节点删除，则通知`/test/lock/seq-00000002`节点，让它再次判断自己是不是最小的节点，是则拿到锁，不是继续等通知。
+> Zookeeper 的 Curator 客户端提供了分布式锁的实现，详情可以看 Curator 相关笔记。
 
-以此类推`/test/lock/seq-00000003`节点监听`/test/lock/seq-00000002`节点，总是让后一个节点监听前一个节点，不用让所有节点都监听最小的节点，避免设置不必要的监听，以免造成大量无效的通知，形成“羊群效应”。
+## Leader 选举
 
-`zookeeper`分布式锁和`redis`分布式锁相比，因为大量的创建、删除节点性能上比较差，并不是很推荐。
+集群中一般需要区分主节点和从节点，主节点主要处理集群中的事务请求，从节点只能处理读请求。
+
+因此需要一种机制能够从集群中选举出主节点，而且当主节点失效不可用时，可以从所有的从节点中选出新的主节点。
+
+可以使用 Zookeeper 实现 Leader 选举，其原理和分布式锁一致：
+
+1. 通过对指定路径创建一个临时有序节点。
+   * 临时节点确保了Master节点不可用（宕机）时，会自动的将节点删除。
+   * 节点有序的机制确保了按照节点的序号依次成为 Master 节点。
+2. 规定当前路径下序号最小的节点为 Master 节点，其他序号的节点监听紧跟其前面序号的节点。
+3. 当节点被删除时（Master 不可用），会发送事件通知紧跟其后面序号的节点。
+4. 客户端收到节点删除事件后（只会有一个客户端获取到该事件），意味着需要重新选举出 Master 节点，此时收到该请求的从节点就会成为新的 Master 节点。
+
+> Zookeeper 的 Curator 客户端提供了 Leader 选举的实现，详情可以看 Curator 相关笔记。
 
 ## 服务注册中心
 
@@ -299,67 +324,3 @@ watcher 类型分为两种：
 - **服务注册：** 服务提供者（`Provider`）启动时，会向 `zookeeper服务端` 注册服务信息，也就是创建一个节点，例如：用户注册服务`com.xxx.user.register`，并在节点上存储服务的相关数据（如服务提供者的 ip 地址、端口等）。
 - **服务发现：** 服务消费者（`Consumer`）启动时，根据自身配置的依赖服务信息，向`zookeeper服务端`获取注册的服务信息并设置 `watch监听`，获取到注册的服务信息之后，将服务提供者的信息缓存在本地，并进行服务的调用。
 - **服务通知：** 一旦服务提供者因某种原因宕机不再提供服务之后，客户端与`zookeeper`服务端断开连接，`zookeeper`服务端上服务提供者对应服务节点会被删除（例如：用户注册服务`com.xxx.user.register`），随后`zookeeper`服务端会异步向所有消费用户注册服务`com.xxx.user.register`，且设置了`watch监听`的服务消费者发出节点被删除的通知，消费者根据收到的通知拉取最新服务列表，更新本地缓存的服务列表。
-
-## 选举
-
-集群中一般需要区分主节点和从节点。因此需要一种选举机制从集群中选取出主节点。
-
-
-
-# Zookeeper 客户端
-
-zookeeper 比较常用的 Java 客户端有 zkclient、curator。
-
-
-
-## Curator
-
-Curator 对于 zookeeper 的抽象层次比较高，简化了zookeeper 客户端的开发量。因此一般使用 Curator。
-
-Curator 好处：
-
-1. 封装 zookeeper client 与 zookeeper server 之间的连接处理
-2. 提供了一套 fluent 风格的操作 api
-3. 提供 zookeeper 各种应用场景（共享锁、 leader 选举）的抽象封装
-
-
-
-**建立连接：**
-
-```java
-CuratorFramework curatorFramework = CuratorFrameworkFactory.builder()
-    .connectString(CONNECTION_STR)
-    .sessionTimeoutMs(5000)
-    .retryPolicy(new ExponentialBackoffRetry(1000,3))
-    .namespace(“curator”)
-    .build();
-```
-
-
-
-### 重试策略
-
-Curator 提供以下几种重试策略：
-
-* ExponentialBackoffRetry：重试指定的次数，且每一次重试之间停顿的时间逐渐增加
-* RetryNTimes：指定最大重试次数的重试策略；
-* RetryOneTime：仅重试一次；
-* RetryUntilElapsed：一直重试直到达到规定的时间。
-
-
-
-### namespace
-
-namespace 是指定隔离命名空间，即客户端对 Zookeeper 上数据节点的任何操作都是相对 namespace 目录进行的，这有利于实现不同的 Zookeeper 的业务之间的隔离。
-
-如 user 服务，那么 namespace 应该为 user。
-
-
-
-### watcher 使用
-
-Curator 提供了三种 Watcher 来监听节点的变化：
-
-* Path Child Cache：监视一个路径下子节点的创建 、 删除 、 更新。
-* NodeCache：监视当前节点的创建、更新、删除，并将结点的数据缓存在本地。
-* TreeCache（Path Child Cache 和 NodeCache 结合）：监视路径下的创建、更新、删除事件，并缓存路径下所有子节点的数据。

@@ -118,3 +118,150 @@ requirepass yourpassword
    ps -aux | grep redis
    kill -9 xxxx
    ```
+
+
+
+# 开机自启
+
+## Redis 自启动
+
+**（一）Redis 启动脚本**
+
+redis 目录下会有一个 utils 目录，里面会自带一个 redis_init_script 启动脚本。
+
+需要将该脚本复制到 `/etc/init.d` 目录下（该目录一般存放启动脚本）。
+
+下面将启动脚本命名为redisd（通常都以d结尾表示后台自启动服务）
+
+```sh
+cp redis_init_script /etc/init.d/redisd
+```
+
+然后需要对 Redis 启动脚本进行配置修改
+
+```sh
+vi /etc/init.d/redisd
+```
+
+首先在 `#!/bin/sh` 下方添加两行：
+
+```sh
+# chkconfig: 2345 90 10
+# description: Redis is a persistent key-value database
+```
+
+接着修改配置相关：
+
+```sh
+#redis服务器监听的端口
+REDISPORT=6379
+#服务端所处位置。需要根据实际安装地址进行修改
+EXEC=/usr/local/soft/redis-5.0.5/src/redis-server
+#客户端位置
+CLIEXEC=/usr/local/soft/redis-5.0.5/src/redis-cli
+#Redis的PID文件位置
+PIDFILE=/var/run/redis_${REDISPORT}.pid
+#配置文件位置，需要修改。预定配置文件名为redis端口号.conf
+CONF="/etc/redis/${REDISPORT}.conf"  
+# 如果设置了Redis设置了密码，则需要以下修改
+# 输入的第二个参数为password
+PASSWORD=$2
+# 修改关闭Redis脚本，加上密码
+$CLIEXEC -a $PASSWORD -p $REDISPORT shutdown
+```
+
+**（二）Redis 启动配置文件**
+
+第一步的启动脚本需要读取 redis 配置文件，该配置文件目录为 `/etc/redis/${REDISPORT}.conf`。
+
+因此对应要创建 `/etc/redis` 目录和将配置文件拷贝过去
+
+```sh
+mkdir /etc/redis
+cp redis.conf /etc/redis/6379.conf
+```
+
+
+
+**（三）开启或关闭自启服务**
+
+```sh
+#设置为开机自启动服务器
+chkconfig redisd on
+#打开服务
+service redisd start
+#关闭服务
+service redisd stop
+
+#关闭服务（如果有密码需要在后面加一个参数）
+service redisd stop password
+```
+
+
+
+## Sentinel 自启动
+
+**（一）Sentinel 启动脚本**
+
+redis 目录下会有一个 utils 目录，里面会自带一个 redis_init_script 启动脚本。
+
+需要将该脚本复制到 `/etc/init.d` 目录下（该目录一般存放启动脚本）。
+
+下面将启动脚本命名为redis-sentineld（通常都以d结尾表示后台自启动服务）
+
+```sh
+cp redis_init_script /etc/init.d/redis-sentineld
+```
+
+然后需要对 Redis 启动脚本进行配置修改
+
+```sh
+vi /etc/init.d/redis-sentineld
+```
+
+首先在 `#!/bin/sh` 下方添加两行：
+
+```sh
+# chkconfig: 2345 90 10
+# description: Redis is a persistent key-value database
+```
+
+接着修改配置相关：
+
+```sh
+#redis-sentinel服务器监听的端口
+SENTINELPORT=26379
+#服务端所处位置。需要根据实际安装地址进行修改
+EXEC=/usr/local/soft/redis-5.0.5/src/redis-sentinel
+#客户端位置
+CLIEXEC=/usr/local/soft/redis-5.0.5/src/redis-cli
+#Redis的PID文件位置
+PIDFILE=/var/run/redis-sentinel.pid
+#配置文件位置，需要修改。预定配置文件名为redis-sentinel端口号.conf
+CONF="/etc/redis-sentinel/${SENTINELPORT}.conf"  
+```
+
+**（二）Sentinel 启动配置文件**
+
+第一步的启动脚本需要读取 Sentinel 配置文件，该配置文件目录为 `/etc/redis-sentinel/${SENTINELPORT}.conf`。
+
+因此对应要创建 `/etc/redis-sentinel` 目录和将配置文件拷贝过去
+
+```sh
+mkdir /etc/redis-sentinel
+cp sentinel.conf /etc/redis-sentinel/26379.conf
+```
+
+
+
+**（三）开启或关闭自启服务**
+
+```sh
+#设置为开机自启动服务器
+chkconfig redis-sentineld on
+#打开服务
+service redis-sentineld start
+#关闭服务
+service redis-sentineld stop
+```
+

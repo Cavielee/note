@@ -8,7 +8,16 @@
 
 Jedis 是我们最熟悉和最常用的客户端。轻量，简洁，便于集成和改造。
 
-Jedis 多个线程使用一个连接的时候线程不安全。因此可以为每个线程创建一个连接，或者使用连接池，从连接池中获取连接（Jedis 连接池基于Apache common pool 实现）。跟数据库一样，可以设置最大连接数等参数。Jedis 中有多种连接池的子类。根据不同的模式有不同的连接池，如 JedisPool（单节点模式）、JedisSentinelPool（哨兵模式）、ShardedJedisPool（分片模式）。
+Jedis 多个线程使用一个连接的时候线程不安全。因为多个线程共享一个 Socket 连接因此会导致：
+
+1. 线程在使用过程中，其他线程可能对该 Socket 连接重新初始化或者关闭，从而导致抛异常。
+2. 多个线程同时通过RedisInputStream和RedisOutputStream读写缓冲，导致缓冲区数据异常。
+
+
+
+解决方案：
+
+如果需要多个线程同时访问 redis，那么可以为每个线程创建一个连接，或者使用连接池，从连接池中获取连接（Jedis 连接池基于Apache common pool 实现）。跟数据库一样，可以设置最大连接数等参数。Jedis 中有多种连接池的子类。根据不同的模式有不同的连接池，如 JedisPool（单节点模式）、JedisSentinelPool（哨兵模式）、ShardedJedisPool（分片模式）。
 
 
 
@@ -100,11 +109,22 @@ private HostAndPort initSentinels(Set<String> sentinels, final String masterName
 }
 ```
 
-#### ShardedJedisPool
+#### JedisCluster
 
-使用 Jedis 连接 Cluster 的时候，只需要连接到任意一个或者多个redis group 中的实例地址。
+使用 Jedis 连接 Cluster 的时候，只需要配置一个连接实例地址即可。
 
-初始化时读取配置文件中的节点配置，获取第一个节点信息的 Redis 连接实例。
+```java
+HostAndPort hostAndPort = new HostAndPort("192.168.0.114", 6379);
+int timeout = JedisCluster.DEFAULT_TIMEOUT;
+int maxAttempts = JedisCluster.DEFAULT_MAX_ATTEMPTS;
+JedisCluster jedisCluster = new JedisCluster(hostAndPort, timeout, timeout, 
+                                             maxAttempts, password, 
+                                             new GenericObjectPoolConfig<Jedis>());
+```
+
+实际上初始化时读取配置文件中的节点配置，从第一个可用的节点去获取集群中所有节点的信息（节点信息和对应的 slot 信息）。
+
+> 如果只配一个连接实例地址，假设该实例刚好不可用，则 JedisCluster 无法正常使用，因此建议可以配置多个实例地址确保其中一个可用即可。
 
 ```java
 // redis.clients.jedis.JedisClusterConnectionHandler#initializeSlotsCache
@@ -200,7 +220,7 @@ Pipeline 模式是一次性发送多个命令，最后一次取回所有的返�
 
 > 注意：
 >
-> 1. jedis-pipeline 的client-buffer 限制：8192 bytes，客户端堆积的命令超过 8192 bytes 时，会发送给服务端。
+> 1. jedis-pipeline 的 client-buffer 限制：8192 bytes，客户端堆积的命令超过 8192 bytes 时，会发送给服务端。
 > 2. Jedis-pipeline 命令还没发送完（可能客户端命令超出 client-buff 限制，将部分提前发送给 Redis服务端），此时 Redis 服务端收到部分请求后会将结果响应给 Jedis，该部分响应结果会放在 Jedis 接收缓冲区，如果该缓冲区满了，Jedis 会通知 Redis 不要继续发响应结果，Redis 收到后会将结果暂时存放在 Redis 输出缓冲区。因此需要注意Redis 对输出缓冲区的相关配置 client-output-buffer-limit normal
 
 #### Transaction

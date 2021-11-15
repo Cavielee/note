@@ -57,7 +57,7 @@ replica-read-only yes
 2. Slave 节点会执行一个定时任务 replicationCron，该任务每秒钟检查是否有新的 Master 节点要连接和复制，如果有则和 Master 节点建立 socket 网络连接。
 3. 主从连接成功后，Slave 节点为该 socket 建立一个专门处理复制工作的文件事件处理器，负责后续的复制工作，如接收 RDB 文件、接收命令传播等。并且会定时向 Master 节点发送 ping 请求，保持心跳连接。
 4. 第一次同步时，Slave 节点会发送 SYNC 命令给 Master 节点，Master 节点会通过 bgsave 命令生成 RDB 快照文件发送给 Slave 节点（可能会超时重连，可以调大 repl-timeout 的值）。Slave 节点收到后首先会清空自身数据，再加载 RDB 文件数据。
-5. 后续过程中，当 Master 节点处理了写操作后，会主动将写命令传播给从节点，从节点再将写命令执行一遍，以确保主从数据一直。
+5. 后续过程中，当 Master 节点处理了写操作后，会主动将写命令传播给从节点，从节点再将写命令执行一遍，以确保主从数据一致。
 6. Redis 启动时都会自带一个 run id，通过 master_repl_offset 可以判断当前从服和主服的 run id 是否相同，从而判断数据是否一致。如果主从出现断线重连（主从都没有重启，可能超时重连），会根据 master_repl_offset 进行增量同步。但如果重启了，则会重新全量复制一遍。
 
 
@@ -115,21 +115,23 @@ Sentinel 相当于监听服务器，实际上是一个特殊的 Redis 节点。
 
 **（四）故障转移**
 
-Sentinel Leader 节点会根据 Slave 节点以下因素进行选举 Master 节点：
+1. Sentinel Leader 节点会根据 Slave 节点以下因素进行选举 Master 节点：
+   1. 断开连接时长。若与哨兵连接断开时间超过了某个阈值，就直接失去了选举权。
+   2. 优先级。节点的配置文件里可以设置优先级（replica-priority 100），数值越小优先级越高。
+   3. 数据复制数量。如果节点优先级相同则会优先选择最接近 Master 节点数据的（根据复制偏移量 master_repl_offset 最大）。
+   4. 如果前面都相同，则会选择进程 id 最小的。
 
-1. 断开连接时长。若与哨兵连接断开时间超过了某个阈值，就直接失去了选举权。
-2. 优先级。节点的配置文件里可以设置优先级（replica-priority 100），数值越小优先级越高。
-3. 数据复制数量。如果节点优先级相同则会优先选择最接近 Master 节点数据的（根据复制偏移量 master_repl_offset 最大）。
-4. 如果前面都相同，则会选择进程 id 最小的。
+2. Sentinel Leader 节点选取出 Master 节点后，会向新的 Master 节点发送 slaveof no one 命令，让其成为独立节点。然后向其他节点发送 slaveof 命令指定其新的 Master 信息。
+3. Sentinel 修改其配置中的 Master 节点信息。
 
+> 注意：如果在 Sentinel 启用前，如果 Master 节点挂了，Sentinel 无法正常工作。因为 Sentinel 启动时需要从 Master 节点获取集群所有节点信息。
 
+**（五）失效 Master 节点重启**
 
-Sentinel Leader 节点选取出 Master 节点后，会向新的 Master 节点发送 slaveof no one 命令，让其成为独立节点。然后向其他节点发送 slaveof 命令指定其新的 Master 信息。
+1. 若失效的 Master 节点重新连入时，会变为 Slave 进入管理。
+2. Sentinel 是通过修改 redis.conf 文件来使 Master、Slave之间相互转换，因此需要时要对 redis.conf 做备份。
 
->  注意：
->
-> 1. 若失效的 Master 节点重新连入时，会变为 Slave 进入管理。
-> 2. Sentinel 是通过修改 redis.conf 文件来使 Master、Slave之间相互转换，因此需要时要对 redis.conf 做备份。
+> 注意：由于 Master 节点重启后变为 Slave 节点，因此如果新的 Master 节点有密码，旧 Master 节点的配置也应该配上新的 Master 密码。（因此建议集群所有节点的密码应当一致）
 
 
 
@@ -139,12 +141,24 @@ Sentinel 配置信息在 sentinel.conf 文件。
 
 | 参数                              | 说明                                                         |
 | --------------------------------- | ------------------------------------------------------------ |
+| protected-mode                    | 可以设置为 no，表示外部可访问                                |
 | port                              | 默认端口为 26379                                             |
 | dir                               | sentinel 的工作目录                                          |
-| sentinel monitor                  | 配置监听的 Master 节点信息，最后一个参数为最少投票数（根据 Sentinel 集群数设置） |
+| sentinel monitor                  | `sentinel monitor <master-name> <port> <quorum>` 配置监听的 Master 节点信息，最后一个参数为最少投票数（根据 Sentinel 集群数设置） |
+| sentinel auth-pass                | `sentinel auth-pass <master-name> <password>`，如果 master 节点设置了密码，需要配置对应的密码 |
 | down-after-milliseconds（毫秒）   | master 宕机多久，才会被Sentinel 主观认为下线                 |
 | sentinel failover-timeout（毫秒） | 1.同一个 sentinel 对同一个master 两次 failover 之间的间隔时间。<br/>2.当一个 slave 从一个错误的 master 那里同步数据开始计算时间。直到 slave 被纠正为向正确的master 那里同步数据时。<br/>3.当想要取消一个正在进行的 failover 所需要的时间。<br/>4.当进行 failover 时，配置所有slaves 指向新的master 所需的最大时间。 |
-| parallel-syncs                    | 这个配置项指定了在发生 failover 主备切换时最多可以有多少个 slave 同时对新的master 进行同步，这个数字越小，完成 failover 所需的时间就越长，但是如果这个数字越大，就意味着越多的 slave 因为replication 而不可用。可以通过将这个值设为 1 来保证每次只有一个slave 处于不能处理命令请求的状态。 |
+| parallel-syncs                    | 这个配置项指定了在发生 failover 主备切换时最多可以有多少个 slave 同时对新的 master 进行同步，这个数字越小，完成 failover 所需的时间就越长，但是如果这个数字越大，就意味着越多的 slave 因为 replication 而不可用。可以通过将这个值设为 1 来保证每次只有一个slave 处于不能处理命令请求的状态。 |
+
+
+
+## 启动
+
+运行
+
+```sh
+redis-sentinel ../sentinel.config
+```
 
 
 
@@ -270,25 +284,64 @@ Redis Cluster 是 Redis 自实现的数据分片方案。
 Redis Cluster 解决了以下问题：
 
 1. 去中心化，客户端不需要通过代理中间件进行间接访问 Redis，减少网络消耗。
-2. 客户端只要连接Redis 集群中任意一个节点就可以自动实现操作路由，避免了代理中间件不可用导致整个 Redis 服务不可用。
+2. 客户端只要连接 Redis 集群中任意一个节点就可以自动实现操作路由，避免了代理中间件不可用导致整个 Redis 服务不可用。
 
 
+
+#### 配置
+
+集群配置信息在 redis.conf 文件。
+
+| 参数                          | 说明                                                         |
+| ----------------------------- | ------------------------------------------------------------ |
+| cluster-enabled               | 开启集群需要配置为 yes                                       |
+| cluster-config-file           | 集群配置信息文件，由Redis自行更新，不用手动配置。每个节点都有一个集群配置文件用于持久化保存集群信息，需确保与运行中实例的配置文件名不冲突。 |
+| cluster-node-timeout          | 节点互连超时时间，毫秒为单位                                 |
+| cluster-slave-validity-factor | 在进行故障转移的时候全部slave都会请求申请为master，但是有些slave可能与master断开连接一段时间了导致数据过于陈旧，不应该被提升为master。该参数就是用来判断slave节点与master断线的时间是否过长。判断方法是：比较slave断开连接的时间和(node-timeout * slave-validity-factor)+ repl-ping-slave-period如果节点超时时间为三十秒, 并且slave-validity-factor为10，假设默认的repl-ping-slave-period是10秒，即如果超过310秒slave将不会尝试进行故障转移 |
+| cluster-migration-barrier     | master的slave数量大于该值，slave才能迁移到其他孤立master上，如这个参数被设为2，那么只有当一个主节点拥有2个可工作的从节点时，它的一个从节点才会尝试迁移。 |
+| cluster-require-full-coverage | 集群所有节点状态为ok才提供服务。建议设置为no，可以在slot没有全部分配的时候提供服务。 |
+
+
+
+#### 启动
+
+Redis-cluster 至少需要三主三从，因为主节点之间投票需要过半防止脑裂问题，因此奇数主节点会比较好。
+
+**（一）修改配置**
+
+修改每一个节点的配置，注意修改集群相关的配置
+
+**（二）启动集群所有节点**
+
+启动集群所有节点
+
+**（三）启动集群**
+
+实际为将所有节点进行通信分组
+
+```sh
+redis-cli  --cluster  create   192.168.0.108:6379 192.168.0.110:6379 192.168.0.111:6379 192.168.0.112:6379 192.168.0.113:6379 192.168.0.114:6379 --cluster-replicas 1 -a password
+```
+
+`--cluster-replicas 1 `：代表主从数量关系，1代表一个 Master，一个Slave。
+
+`-a password`：如果节点需要密码访问。
+
+**（四）确认分组**
+
+启动后会提示自动分组结果，如果没问题可以输入yes。
+
+执行完毕后会看到如下信息，显示了master和slave的信息等，这些主从是自动分配出来的，通过ID号可以看出对应的主从关系。如果确认没有问题输入“yes”回车确定
 
 #### 原理
 
 **（一）通信**
 
-Redis Cluster 中所有节点通过PING-PONG机制彼此互联，使用 gossip 协议 进行通信，优化传输速度和带宽。相互之间共享数据分片、节点状态等信息。
+Redis Cluster 中所有节点通过PING-PONG机制彼此互联，使用 gossip 协议进行通信，优化传输速度和带宽。相互之间共享数据分片、节点状态等信息。
 
 **（二）分组**
 
 Redis Cluster 自带哨兵机制，根据配置的主从数量关系，将所有的节点分成多个 Master-Slaves 组，并且当有 Master 节点宕机时，会自动从其 Slave 节点选举出新的 Master 节点。
-
-```sh
-redis-cli  --cluster  create   127.0.0.1:7000 127.0.0.1:7001 127.0.0.1:7002 127.0.0.1:7003 127.0.0.1:7004 127.0.0.1:7005 --cluster-replicas 1 
-```
-
-`--cluster-replicas 1 ` 代表主从数量关系，1代表一个 Master，一个Slave。
 
 **（三）数据分片**
 
@@ -312,11 +365,15 @@ ClusterState：
 
 **（五）客户端连接**
 
-客户端可以直接连接集群中任意节点。
+由于 Redis Cluster 中的节点彼此相互通信，且共享分片信息和集群信息，
 
-由于 Redis Cluster 中的节点彼此相互通信，且共享分片信息和集群信息，因此当客户端发起操作请求后，如果操作不是由该节点处理，会返回 MOVE 错误给客户端，告诉客户端该操作执行的节点信息，客户端收到后会自动与新的节点建立连接，并重新发送操作，从而实现操作路由。
+* 使用普通客户端。当客户端发起操作请求后，如果操作不是由该节点处理，会返回 MOVE 错误给客户端（告诉客户端该操作应该在集群中对应那个 Master 节点执行）。
+* 而如果使用集群模式的客户端，当收到 MOVE 错误后，会根据错误提示信息将该操作重新路由到对应的节点执行。
 
-实际上像 Jedis 等客户端为了避免操作经常重定向路由，会将 slot 和 node 的映射关系缓存下来，从而使操作直接发送到正确的节点执行，从而提高命令执行的效率。
+> 注意：
+>
+> * 集群模式客户端，集群节点会存有集群其他节点的信息，因此集群模式客户端只需要连接上集群中一个可用节点即可使用。
+> * 像 Jedis 等客户端为了避免操作经常重定向路由，会将 slot 和 node 的映射关系缓存下来，从而使操作直接发送到正确的节点执行，从而提高命令执行的效率。
 
 **（六）数据迁移**
 
