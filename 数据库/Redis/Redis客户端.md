@@ -372,3 +372,8 @@ spring.redis.timeout= # 连接超时时间.
 
 
 
+# 可视化
+
+## RedisInsight
+
+https://redis.com/redis-enterprise/redis-insight/#insight-form

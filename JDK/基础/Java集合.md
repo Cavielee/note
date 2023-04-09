@@ -342,3 +342,13 @@ final Entry<K,V> getEntry(Object key) {
 1. HashMap 是线程不安全的，HashTable 通过在 HashMap 的基础上为每一个方法添加 Synchronized 从而变成线程安全。
 2. HashMap 允许 null 作为 key，HashTable 不允许 key 为 null
 
+
+
+# 随机排序
+
+Collections.shuffle()方法，其功能与排序刚好相反，它会随机的混排序列中元素的顺序。
+
+```java
+Collections.shuffle(list);
+```
+

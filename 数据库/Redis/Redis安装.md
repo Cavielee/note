@@ -265,3 +265,20 @@ service redis-sentineld start
 service redis-sentineld stop
 ```
 
+
+
+# windows 后台启动
+
+1. 注册服务
+
+```sh
+redis-server --service-install redis.windows.conf --loglevel verbose
+```
+
+2. 启动或关闭 redis 服务
+
+```sh
+redis-server --service-start
+redis-server --service-stop
+```
+

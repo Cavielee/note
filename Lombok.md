@@ -19,12 +19,21 @@ Lombok 通过使用注解的形式减少了手写开发的代码，特别是定�
 
 导包：
 
+Maven配置：
+
 ```xml
 <dependency>
     <groupId>org.projectlombok</groupId>
     <artifactId>lombok</artifactId>
     <version>${lombok.version}</version>
 </dependency>
+```
+
+yaml配置：
+
+```yaml
+compileOnly 'org.projectlombok:lombok'
+annotationProcessor 'org.projectlombok:lombok'
 ```
 
 

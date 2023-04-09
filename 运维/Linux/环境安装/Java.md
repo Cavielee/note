@@ -9,7 +9,7 @@ yum list java*
 **选择适合本机的JDK，并安装：**
 
 ```sh
-yum install java-1.8.0-openjdk* -y
+yum install java-11-openjdk* -y
 ```
 
 

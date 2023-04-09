@@ -9,7 +9,7 @@
 
 ### Cron 属性
 
-
+任务方法执行完，遇到下一次匹配的时间再次执行，如果执行耗时较长，与下一次匹配时间冲突，则该匹配时间不会触发执行。
 
 | 字段                     | 允许值                                 | 允许的特殊字符               |
 | :----------------------- | :------------------------------------- | :--------------------------- |
@@ -52,3 +52,123 @@
 
 
 
+## 单线程问题
+
+当项目有多个定时任务时，此时如果同一时间存在多个定时任务执行，则只会有一个定时任务执行成功。
+
+原因：**@Scheduled注解默认情况下以单线程的方式执行定时任务**
+
+* 如果一个定时任务执行时间大于其任务间隔时间，那么下一次将会等待上一次执行结束后再继续执行。
+
+* 如果多个定时任务在同一时刻执行，任务会依次执行。
+
+案例：
+
+```java
+@Component
+public class BrigeTask {
+    @Scheduled(cron = "*/5 * * * * ?")
+    private void cron() throws InterruptedException {
+        System.out.println(Thread.currentThread().getName() + "-cron:" + LocalDateTime.now().format(FORMATTER));
+        TimeUnit.SECONDS.sleep(6);
+    }
+
+    @Scheduled(fixedDelay = 5000)
+    private void fixedDelay() throws InterruptedException {
+        System.out.println(Thread.currentThread().getName() + "-fixedDelay:" + LocalDateTime.now().format(FORMATTER));
+        TimeUnit.SECONDS.sleep(6);
+    }
+
+
+    @Scheduled(fixedRate = 5000)
+    private void fixedRate() throws InterruptedException {
+        System.out.println(Thread.currentThread().getName() + "-fixedRate:" + LocalDateTime.now().format(FORMATTER));
+        TimeUnit.SECONDS.sleep(6);
+    }
+
+}
+```
+
+那么如果某定时任务耗时比较长，而同一时间可能存在其他定时任务执行，那么可能会导致该任务会一直等待该任务执行完。
+
+上述案例中，cron 和 fixedDelay 执行次数会较少，原因在于：
+
+1. cron的执行方式是，任务方法执行完，遇到下一次匹配的时间再次执行，基本就会10s执行一次，因为执行任务方法的时间区间会错过一次匹配。
+2. fixedDelay的执行方式是，方法执行了6s，然后会再等5s再执行下一次，在上面的条件下，基本就是每11s执行一次。
+3. fixedRate的执行方式就变成了每隔6s执行一次，因为按固定区间执行它没5s就应该执行一次，但是任务方法执行了6s，没办法，只好6s执行一次。
+
+**解决方案：**
+
+1. 设置线程池大小：
+
+   ```java
+   @Bean
+   public TaskScheduler taskScheduler() {
+   	ThreadPoolTaskScheduler taskScheduler = new ThreadPoolTaskScheduler();
+       // 核心线程池数量，方法: 返回可用处理器的Java虚拟机的数量。
+       taskScheduler.setPoolSize(Runtime.getRuntime().availableProcessors() * 2);
+   	return taskScheduler;
+   }
+   ```
+
+2. 提供线程池默认配置类
+
+   ```java
+   @Configuration
+   public class ScheduleConfig implements SchedulingConfigurer {
+       @Override
+       public void configureTasks(ScheduledTaskRegistrar scheduledTaskRegistrar) {
+           scheduledTaskRegistrar.setScheduler(
+               new ScheduledThreadPoolExecutor(Runtime.getRuntime().availableProcessors() * 2)
+           );
+       }
+   }
+   
+   ```
+
+3. application.yml 设置默认配置
+
+   ```yaml
+   server:
+     port: 8081
+   spring:
+     application:
+       name: daily-task
+     task:
+       scheduling:
+         pool:
+           size: 8 #配置Scheduled定时任务为多线程
+   ```
+
+4. 添加 @EnableAsync 注解，在 @Scheduled 方法上添加 @Async 注解，从而使用异步执行：
+
+   启动类 Application 上添加 @EnableAsync 注解，开启允许异步执行：
+
+   ```java
+   @SpringBootApplication
+   @EnableScheduling
+   @EnableAsync
+   public class TaskApplication {
+       public static void main(String[] args) {
+           SpringApplication.run(TaskApplication.class, args);
+       }
+   }
+   ```
+
+   在 @Scheduled 方法上添加 @Async 注解开启异步执行定时任务：
+
+   ```java
+   @Component
+   public class TestAJob {
+       private static final Logger logger = LoggerFactory.getLogger(TestAJob.class);
+    
+       @Async
+       @Scheduled(cron = "*/2 * * * * ?")
+       public void testA() throws InterruptedException {
+           Thread.sleep(10000);
+           logger.info("testA 执行==============");
+       }
+   }
+   ```
+
+   

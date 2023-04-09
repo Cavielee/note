@@ -678,10 +678,6 @@ public class MyConsumer extends Thread {
 
 
 
-
-
-
-
 ### 消费数量
 
 消费者是通过拉取的方式从 kafka 中获取消息。
