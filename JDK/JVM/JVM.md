@@ -104,7 +104,7 @@ ClassFile {
 
 #### 双亲委派加载机制
 
-![双亲委派加载机制](C:\Users\63190\Desktop\pics\双亲委派加载机制.jpg)
+![双亲委派加载机制](https://raw.githubusercontent.com/Cavielee/notePics/main/双亲委派加载机制.jpg)
 
 我们可以知道 Java 不允许同时出现全限定名相同的类，因此我们加载时需要避免加载全限定名相同的类。
 
@@ -165,7 +165,7 @@ private static final int a = 9;
 
 因此 JVM 为这些运行时的数据划分了不同的区域去存储：
 
-![运行时数据区](C:\Users\63190\Desktop\pics\运行时数据区.jpg)
+![运行时数据区](https://raw.githubusercontent.com/Cavielee/notePics/main/运行时数据区.jpg)
 
 JVM 划分了上述的5个运行时数据区：方法区、堆、虚拟机栈、本地方法栈、程序计数器。
 
@@ -203,7 +203,7 @@ Java 对象实例以及数组都在堆上分配。GC 主要场所。
 
 ### 对象的内存结构
 
-![对象内存结构](C:\Users\63190\Desktop\pics\对象内存结构.jpg)
+![对象内存结构](https://raw.githubusercontent.com/Cavielee/notePics/main/对象内存结构.jpg)
 
 一个 Java 对象的内存结构分为三个部分：对象头、实例数据、对其填充
 
@@ -228,11 +228,11 @@ Java 如何执行内容？
 
 线程执行的每一个方法都会封装成一个栈帧。调用一个方法，就会向栈中压入一个栈帧；一个方法调用完成，就会把该栈帧从栈中弹出。
 
-![栈帧](C:\Users\63190\Desktop\pics\栈的运作.jpg)
+![栈帧](https://raw.githubusercontent.com/Cavielee/notePics/main/栈的运作.jpg)
 
 ### 栈帧内容
 
-![栈帧](C:\Users\63190\Desktop\pics\栈帧.png)
+![栈帧](https://raw.githubusercontent.com/Cavielee/notePics/main/栈帧.png)
 
 每个栈帧中包括局部变量表(Local Variables)、操作数栈(Operand Stack)、指向运行时常量池的引用(A reference to the run-time constant pool)、方法返回地址(Return Address)和附加信息。
 
@@ -315,7 +315,7 @@ JDK 5 以后每个线程的栈大小为1M，在这之前每个线程的栈大小
 
 # 内存模型
 
-![内存模型](C:\Users\63190\Desktop\pics\内存模型.jpg)
+![内存模型](https://raw.githubusercontent.com/Cavielee/notePics/main/内存模型.jpg)
 
 JVM 内存模式在启动时，实际可以看成两个部分：方法区（非堆）和堆。
 
@@ -414,7 +414,7 @@ Old 区存放的是一些大对象或者一定年龄的对象（经历过一定�
 
 Old 区GC称为Major GC，Old 区垃圾回收算法一般采用 `标记—整理算法`。Major GC一般伴随着 Minor GC，即发生了 Minor GC后仍然没有足够的内存空间分配给新对象，则会对 Old 区执行 Major GC，如果 Major GC后仍然没有足够的内存空间分配给新对象，则会抛出 OOM 异常（Out of Memory 内存溢出）。
 
-![新对象内存分配过程](C:\Users\63190\Desktop\pics\新对象内存分配过程.jpg)
+![新对象内存分配过程](https://raw.githubusercontent.com/Cavielee/notePics/main/新对象内存分配过程.jpg)
 
 
 
@@ -673,7 +673,7 @@ Safe Point 可以让 GC 时，用户线程到达指定安全点并暂停等待�
 
 垃圾算法实际是一种方法论，而垃圾收集器就是内存回收的具体实现，是对垃圾算法的落地。
 
-![垃圾收集器分代运用](C:\Users\63190\Desktop\pics\垃圾收集器分代运用.jpg)
+![垃圾收集器分代运用](https://raw.githubusercontent.com/Cavielee/notePics/main/垃圾收集器分代运用.jpg)
 
 ### Serial
 
@@ -691,7 +691,7 @@ Safe Point 可以让 GC 时，用户线程到达指定安全点并暂停等待�
 
 > Client 模式下的默认新生代选择
 
-![Serial垃圾收集器](C:\Users\63190\Desktop\pics\Serial垃圾收集器.jpg)
+![Serial垃圾收集器](https://raw.githubusercontent.com/Cavielee/notePics/main/Serial垃圾收集器.jpg)
 
 ### Serial Old
 
@@ -790,7 +790,7 @@ Safe Point 可以让 GC 时，用户线程到达指定安全点并暂停等待�
 >
 > 对于这些对象，需要重新标记以防止被遗漏。为了提高重新标记的效率，并发标记阶段会把这些发生变化的对象所在的Card标识为Dirty，这样就可以在重新标记阶段将这些Dirty Card的对象作为 GC Roots对象重新标记一遍即可。
 
-![CMS回收流程](C:\Users\63190\Desktop\pics\CMS回收过程.jpg)
+![CMS回收流程](https://raw.githubusercontent.com/Cavielee/notePics/main/CMS回收过程.jpg)
 
 ### G1
 
@@ -900,7 +900,7 @@ G1分为Young GC、Mixed GC、Full GC。
 
 2. 移动/转移/拷贝存活对象（evacuation）：和年轻代的移动过程一致
 
-![G1回收流程](C:\Users\63190\Desktop\pics\G1回收流程.jpg)
+![G1回收流程](https://raw.githubusercontent.com/Cavielee/notePics/main/G1回收流程.jpg)
 
 
 

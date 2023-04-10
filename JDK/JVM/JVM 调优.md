@@ -43,7 +43,7 @@
 java -XX:+PrintFlagsFinal -version > flags.txt
 ```
 
-![JVM参数](C:\Users\63190\Desktop\pics\JVM参数.jpg)
+![JVM参数](https://raw.githubusercontent.com/Cavielee/notePics/main/JVM参数.jpg)
 
 `=` 号右边的值代表当前 JVM 该参数的值。如果出现 `:=` 则表示该参数被用户或 JVM 修改了，不是默认值。
 
@@ -607,5 +607,5 @@ G1 是 JDK 9默认的垃圾收集器，适用于新老生代。
 
 # JVM性能优化总结
 
-![JVM 调优指南](C:\Users\63190\Desktop\pics\JVM 调优指南.jpg)
+![JVM 调优指南](https://raw.githubusercontent.com/Cavielee/notePics/main/JVM 调优指南.jpg)
 

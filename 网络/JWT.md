@@ -4,7 +4,7 @@
 
 登录认证后，通过服务端生成 Session，并将对应的 SessionId 作为 Cookie 发送给客户端。只要客户端每次请求时都携带 SessionId 的 Cookie，服务端如果通过该 SessionId 找到对应的 Session，意味着已经认证成功过。
 
-![Session认证](C:\Users\63190\Desktop\pics\Session认证.png)
+![Session认证](https://raw.githubusercontent.com/Cavielee/notePics/main/Session认证.png)
 
 缺点：
 
@@ -15,7 +15,7 @@
 
 ## JWT
 
-![JWT认证](C:\Users\63190\Desktop\pics\JWT认证.png)
+![JWT认证](https://raw.githubusercontent.com/Cavielee/notePics/main/JWT认证.png)
 
 认证通过后，服务端生成 JWT，JWT 包含用户数据等信息，并将 JWT 发送给客户端。客户端每次请求都会携带 JWT，服务端通过私钥进行验证，如果解析出来的公钥和自身公钥一致，则 JWT 有效，表明已经认证成功过。
 
@@ -25,7 +25,7 @@
 
 JOSE 全称 JSON Object Signing and Encryption，它定义了一系列的标准，**用来规范网络传输过程中使用 JSON 的方式**。
 
-![JOSE](C:\Users\63190\Desktop\pics\JOSE.png)
+![JOSE](https://raw.githubusercontent.com/Cavielee/notePics/main/JOSE.png)
 
 ## JWA
 
@@ -78,7 +78,7 @@ JWK —— JSON Web Key ，它就是一个 JSON ，**JWK 就是用 JSON 来表�
 
 > 可以通过网站 jwt.io 解析 JWT
 
-![JWT案例](C:\Users\63190\Desktop\pics\JWT案例.png)
+![JWT案例](https://raw.githubusercontent.com/Cavielee/notePics/main/JWT案例.png)
 
 JWT 分为三个部分：
 

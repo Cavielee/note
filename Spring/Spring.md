@@ -213,7 +213,7 @@ BeanFactory 是工厂模式的实现，通过 Bean 工厂从其内部的 IOC 容
 
 BeanFactory 是一个接口类，其定义了 IOC 容器的基本功能规范（如获取 Bean）。
 
-![SpringBeanFactory](C:\Users\63190\Desktop\pics\SpringBeanFactory.png)
+![SpringBeanFactory](https://raw.githubusercontent.com/Cavielee/notePics/main/SpringBeanFactory.png)
 
 BeanFactory 有三个重要的子类：`ListableBeanFactory`（表示 Bean 是可列表化的）、`HierarchicalBeanFactory` （表示的是 Bean 是有继承关系的，即每个Bean 有可能有父 Bean）和`AutowireCapableBeanFactory`（定义Bean 的自动装配规则）。其最终的默认实现类是 `DefaultListableBeanFactory`，它实现了所有的接口。
 
@@ -274,7 +274,7 @@ Spring 从配置信息中获得 Bean 定义信息（如 Bean 的名字，Bean �
 
 BeanDefinition 继承体系如下：
 
-![BeanDefinition](C:\Users\63190\Desktop\pics\BeanDefinition.png)
+![BeanDefinition](https://raw.githubusercontent.com/Cavielee/notePics/main/BeanDefinition.png)
 
 
 
@@ -465,7 +465,7 @@ IOC 容器的初始化包括 BeanDefinition 的 Resource 定位、加载和注�
 
 以 ApplicationContext 为例讲解，其中最常用的是 ClasspathXmlApplicationContext 其继承体系如下图所示：
 
-![ApplicationContext](C:\Users\63190\Desktop\pics\ApplicationContext.png)
+![ApplicationContext](https://raw.githubusercontent.com/Cavielee/notePics/main/ApplicationContext.png)
 
 ApplicationContext 允许上下文嵌套，通过保持父上下文可以维持一个上下文体系。对于Bean 的查找可以在这个上下文体系中发生，首先检查当前上下文，其次是父上下文，逐级向上，这样为不同的 Spring 应用提供了一个共享的 Bean 定义环境。
 
@@ -1906,7 +1906,7 @@ IOC 容器初始化可以总结为以下步骤：
 
 Spring Xml容器初始化时序图：
 
-![Spring IOC容器初始化](C:\Users\63190\Desktop\pics\Spring IOC容器初始化.png)
+![Spring IOC容器初始化](https://raw.githubusercontent.com/Cavielee/notePics/main/Spring IOC容器初始化.png)
 
 
 
@@ -1923,7 +1923,7 @@ Spring Bean 有两种情况进行实例化：
 
 
 
-![AbstractBeanFactory](C:\Users\63190\Desktop\pics\AbstractBeanFactory.png)
+![AbstractBeanFactory](https://raw.githubusercontent.com/Cavielee/notePics/main/AbstractBeanFactory.png)
 
 ### getBean 入口
 
@@ -3032,7 +3032,7 @@ private Object getPropertyHoldingValue(PropertyTokenHolder tokens) {
 
 Bean 实例化和注入时序图：
 
-![Bean实例化和注入](C:\Users\63190\Desktop\pics\Bean实例化和注入.png)
+![Bean实例化和注入](https://raw.githubusercontent.com/Cavielee/notePics/main/Bean实例化和注入.png)
 
 
 
@@ -3306,7 +3306,7 @@ public Object getProxy(@Nullable ClassLoader classLoader) {
 
 
 
-![Aop相关类](C:\Users\63190\Desktop\pics\Aop相关类.png)
+![Aop相关类](https://raw.githubusercontent.com/Cavielee/notePics/main/Aop相关类.png)
 
 ### 触发通知
 
@@ -3615,5 +3615,5 @@ public static Object invokeJoinpointUsingReflection(@Nullable Object target, Met
 
 AOP 时序图：
 
-![AOP 动态代理](C:\Users\63190\Desktop\pics\AOP 动态代理.png)
+![AOP 动态代理](https://raw.githubusercontent.com/Cavielee/notePics/main/AOP 动态代理.png)
 

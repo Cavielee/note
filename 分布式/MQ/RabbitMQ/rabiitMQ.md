@@ -10,11 +10,11 @@ https://www.rabbitmq.com/which-erlang.html
 
 具体 RabbitMQ 版本和 Erlang 版本依赖关系可从上面网址查看。
 
-![image-20220412100054240](C:\Users\63190\AppData\Roaming\Typora\typora-user-images\image-20220412100054240.png)
+![image-20220412100054240](https://raw.githubusercontent.com/Cavielee/notePics/main/RabbitMQ安装1.png)
 
 点击安装
 
-![image-20220412100339888](C:\Users\63190\AppData\Roaming\Typora\typora-user-images\image-20220412100339888.png)
+![image-20220412100339888](https://raw.githubusercontent.com/Cavielee/notePics/main/RabbitMQ安装2.png)
 
 ## Erlang 安装
 

@@ -337,7 +337,7 @@ CPU处理速度远大于内存和I/O设备，假设CPU要对I/O设备中的某�
 
 #### 高速缓存
 
-![CPU高速缓存](C:\Users\63190\Desktop\pics\CPU高速缓存.png)
+![CPU高速缓存](https://raw.githubusercontent.com/Cavielee/notePics/main/CPU高速缓存.png)
 
 高速缓存是一种读写速度尽可能接近CPU运算速度的高速缓存，用于减少内存和处理器之间运算速度差异。
 
@@ -565,7 +565,7 @@ JMM 抽象模型分为两部分：
 
 为了保证内存可见性，Java 编译器在生成指令序列的适当位置会插入内存屏障来禁止特定类型的处理器的重排序（这些内存屏障会被替换为对应底层硬件的具体指令），在 JMM 中把内存屏障分为四类：
 
-![JMM内存屏障](C:\Users\63190\Desktop\pics\JMM内存屏障.jpg)
+![JMM内存屏障](https://raw.githubusercontent.com/Cavielee/notePics/main/JMM内存屏障.jpg)
 
 
 
@@ -581,7 +581,7 @@ Java 通过 volatile 关键字解决可见性问题。Java 编译器会对 volat
 
 为了提高执行性能，编译器和处理器都会对指令做重排序。
 
-![JVM重排序](C:\Users\63190\Desktop\pics\JVM重排序.jpg)
+![JVM重排序](https://raw.githubusercontent.com/Cavielee/notePics/main/JVM重排序.jpg)
 
 总体分为两部分重排序：编译器和处理器。
 
@@ -718,7 +718,7 @@ Synchronized 有三种使用方法，不同方法对应的锁对象和锁保护�
 
 而在对象头中存储着 Mark World ，它记录了对象和锁有关的信息。
 
-![mark-word](C:\Users\63190\Desktop\pics\mark-word.jpg)
+![mark-word](https://raw.githubusercontent.com/Cavielee/notePics/main/mark-word.jpg)
 
 线程进入 Synchronized 代码块前，首先要获取锁对象。该步骤实际为获取对象中的 monitor 监视器对象，通过该对象去修改  Mark World 的锁标识（该步骤是原子性的，由底层确保）。
 
@@ -763,7 +763,7 @@ Synchronized 有三种使用方法，不同方法对应的锁对象和锁保护�
 
 偏向锁可以看做是为了防止 Synchronized 乱用导致性能降低的优化，而实际开发中一般是多个线程并发/交替的访问同步代码（人为控制，避免 Synchronized），因此偏向锁反而没有必要，可以通过 JVM 的 UseBiasedLocking 参数关闭偏向锁。
 
-![偏向锁](C:\Users\63190\Desktop\pics\偏向锁.jpg)
+![偏向锁](https://raw.githubusercontent.com/Cavielee/notePics/main/偏向锁.jpg)
 
 
 
@@ -793,7 +793,7 @@ Synchronized 有三种使用方法，不同方法对应的锁对象和锁保护�
 
 
 
-![轻量级锁](C:\Users\63190\Desktop\pics\轻量级锁.jpg)
+![轻量级锁](https://raw.githubusercontent.com/Cavielee/notePics/main/轻量级锁.jpg)
 
 
 
@@ -801,7 +801,7 @@ Synchronized 有三种使用方法，不同方法对应的锁对象和锁保护�
 
 重量级锁实际就是获取 monitor 监视器对象的流程。由于其会阻塞等待锁资源的线程（放在锁对象的同步队列中），导致上下文切换（内核态和用户态的切换）的消耗，因此被称为重量级锁。
 
-![重量级锁](C:\Users\63190\Desktop\pics\重量级锁.png)
+![重量级锁](https://raw.githubusercontent.com/Cavielee/notePics/main/重量级锁.png)
 
 #### 重入
 
@@ -873,13 +873,13 @@ public class Storage {
 }
 ```
 
-![wait和notify原理](C:\Users\63190\Desktop\pics\wait和notify原理.png)
+![wait和notify原理](https://raw.githubusercontent.com/Cavielee/notePics/main/wait和notify原理.png)
 
 
 
 # 线程生命周期
 
-![线程生命周期](C:\Users\63190\Desktop\pics\线程生命周期.png)
+![线程生命周期](https://raw.githubusercontent.com/Cavielee/notePics/main/线程生命周期.png)
 
 1. 新建（NEW）：初始状态，线程创建后未调用 start 方法的状态。
 

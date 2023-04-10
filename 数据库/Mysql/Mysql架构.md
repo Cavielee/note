@@ -7,7 +7,7 @@ MySQL 作为开源的数据库，其有许多分支如：
 
 一条 SQL 语句的执行流程如下：
 
-![Mysql执行流程](C:\Users\63190\Desktop\pics\Mysql执行流程.jpg)
+![Mysql执行流程](https://raw.githubusercontent.com/Cavielee/notePics/main/Mysql执行流程.jpg)
 
 
 
@@ -482,7 +482,7 @@ Archive 会生成三个文件
 
 # 体系结构总结
 
-![MySQL架构](C:\Users\63190\Desktop\pics\MySQL架构.jpg)
+![MySQL架构](https://raw.githubusercontent.com/Cavielee/notePics/main/MySQL架构.jpg)
 
 1. Connector：用来支持各种语言和SQL 的交互，比如PHP，Python，Java 的JDBC；
 2. Management Serveices & Utilities：系统管理和控制工具，包括备份恢复、MySQL 复制、集群等等；
@@ -499,7 +499,7 @@ Archive 会生成三个文件
 
 总体上，可以把MySQL 分成三层：
 
-![MySQL架构分层](C:\Users\63190\Desktop\pics\MySQL架构分层.jpg)
+![MySQL架构分层](https://raw.githubusercontent.com/Cavielee/notePics/main/MySQL架构分层.jpg)
 
 ### 连接层
 
@@ -550,7 +550,7 @@ InnnoDB 的数据都是放在磁盘上的，InnoDB 操作数据有一个最小�
 
 Buffer Pool 是InnoDB 里面非常重要的一个结构，它的内部又分成几块区域。下面是InnoDB 的内存结构和磁盘结构：
 
-![InnoDB内存结构和磁盘结构](C:\Users\63190\Desktop\pics\InnoDB内存结构和磁盘结构.jpg)
+![InnoDB内存结构和磁盘结构](https://raw.githubusercontent.com/Cavielee/notePics/main/InnoDB内存结构和磁盘结构.jpg)
 
 ### 内存结构
 
@@ -681,7 +681,7 @@ SHOW VARIABLES LIKE 'innodb_flush_log_at_trx_commit';
 | 1（默认，实时写，实时刷）   | 每次事务提交时MySQL 都会把log buffer 的数据写入log file，并且刷到磁盘中去。 |
 | 2（实时写，延迟刷）         | 每次事务提交时MySQL 都会把log buffer 的数据写入log file。但是flush 操作并不会同时进行。该模式下，MySQL 会每秒执行一次flush 操作。 |
 
-![redo log写入](C:\Users\63190\Desktop\pics\redo log写入.jpg)
+![redo log写入](https://raw.githubusercontent.com/Cavielee/notePics/main/redo log写入.jpg)
 
 ### 磁盘结构
 
@@ -699,7 +699,7 @@ InnoDB 系统表空间包含InnoDB 数据字典、双写缓冲区，Change Buffe
 2. 数据字典：由内部系统表组成，存储表和索引的元数据（定义信息）。
 3. 双写缓冲（InnoDB 的一大特性）：InnoDB 的页和操作系统的页大小不一致，InnoDB 页大小一般为16K，操作系统页大小为4K，InnoDB 的页写入到磁盘时，一个页需要分4 次写。
 
-![双写缓冲](C:\Users\63190\Desktop\pics\双写缓冲.jpg)
+![双写缓冲](https://raw.githubusercontent.com/Cavielee/notePics/main/双写缓冲.jpg)
 
 如果存储引擎正在写入页的数据到磁盘时发生了宕机，可能出现页只写了一部分的情况，比如只写了4K，就宕机了，这种情况叫做部分写失效（partial page write），可能会导致数据丢失。
 

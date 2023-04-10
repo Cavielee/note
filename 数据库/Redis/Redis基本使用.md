@@ -186,7 +186,7 @@ Redis 提供 String、Hash、Set、List、Zset、Hyperloglog、Geo、Streams 8�
 
 Redis 是 KV 的数据库，它是通过 HashTable 实现的。由于 key 会存在 hash 碰撞，因此实际上 Redis 的每个键值实际上都是一个链表，键值会存储指向下一个键值的指针。
 
-![Redis_String数据类型结构](C:\Users\63190\Desktop\pics\Redis_Dict字典.png)
+![Redis_String数据类型结构](https://raw.githubusercontent.com/Cavielee/notePics/main/Redis_Dict字典.png)
 
 ### DictEntry 键值
 
@@ -597,7 +597,7 @@ ziplist 结构如下：
 
 `<zlbytes> <zltail> <zllen> <zlentry> <zlentry> ... <zlentry> <zlend>`
 
-![Redis_ziplist](C:\Users\63190\Desktop\pics\Redis_ziplist.png)
+![Redis_ziplist](https://raw.githubusercontent.com/Cavielee/notePics/main/Redis_ziplist.png)
 
 ## List
 
@@ -678,7 +678,7 @@ Redis 的 List 是双向链表型的数据结构，可以充当队列和栈的�
 
 Redis 的 list 使用 quicklist 来存储。quicklist 存储了一个双向链表，每个节点都是一个ziplist（可以存储多个entry）。
 
-![Redis_list](C:\Users\63190\Desktop\pics\Redis_list.jpg)
+![Redis_list](https://raw.githubusercontent.com/Cavielee/notePics/main/Redis_list.jpg)
 
 #### quicklist
 
@@ -944,7 +944,7 @@ Redis Sorted Set 是有序的、不可重复的 String 集合。Sorted Set 中�
 
 因此产生 skiplist 的数据结构，实际可以理解为将原本一个链表拆分成多层链表：
 
-![skiplist](C:\Users\63190\Desktop\pics\skiplist.jpg)
+![skiplist](https://raw.githubusercontent.com/Cavielee/notePics/main/skiplist.jpg)
 
 对原链表的元素随机生成层数，属于相同层数的元素会建立一条链表。当进行比较时，会从高层数的链表开始查询，根据大小依次往下层继续判断，直到找到或没有下一层链表。
 

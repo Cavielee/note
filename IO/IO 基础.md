@@ -8,7 +8,7 @@ IO 操作，即输入（读）输出（写）操作。
 
 进程发起读请求，内核收到请求后，会将硬件设备数据拷贝到内核空间中，再将内核空间的数据拷贝进程的空间中。
 
-![操作系统的IO](C:\Users\63190\Desktop\pics\操作系统的IO.png)
+![操作系统的IO](https://raw.githubusercontent.com/Cavielee/notePics/main/操作系统的IO.png)
 
 
 
@@ -16,7 +16,7 @@ IO 操作，即输入（读）输出（写）操作。
 
 Blocking IO——同步阻塞IO
 
-![操作系统的BIO](C:\Users\63190\Desktop\pics\操作系统的BIO.png)
+![操作系统的BIO](https://raw.githubusercontent.com/Cavielee/notePics/main/操作系统的BIO.png)
 
 进程发起请求后会被挂起，阻塞等待，直到数据拷贝到进程内存空间后，才能继续处理。
 
@@ -24,7 +24,7 @@ Blocking IO——同步阻塞IO
 
 Non-blocking IO——非阻塞IO
 
-![操作系统的NIO](C:\Users\63190\Desktop\pics\操作系统的NIO.png)
+![操作系统的NIO](https://raw.githubusercontent.com/Cavielee/notePics/main/操作系统的NIO.png)
 
 进程发起请求后，如果数据未准备好，进程不会阻塞等待，而是直接返回。
 
@@ -34,7 +34,7 @@ Non-blocking IO——非阻塞IO
 
 实际上也是一种非阻塞 IO 模型。
 
-![操作系统的多路复用IO](C:\Users\63190\Desktop\pics\操作系统的多路复用IO.png)
+![操作系统的多路复用IO](https://raw.githubusercontent.com/Cavielee/notePics/main/操作系统的多路复用IO.png)
 
 进程通过操作系统的多路复用模型注册一个 IO 事件，并监听该事件。
 
@@ -44,7 +44,7 @@ Non-blocking IO——非阻塞IO
 
 Aynchronous IO——异步非阻塞IO
 
-![操作系统的AIO](C:\Users\63190\Desktop\pics\操作系统的AIO.png)
+![操作系统的AIO](https://raw.githubusercontent.com/Cavielee/notePics/main/操作系统的AIO.png)
 
 进程发起异步读请求后直接返回，当内核将数据拷贝到进程的内存空间后通知进程可以直接使用数据（触发回调函数）。
 

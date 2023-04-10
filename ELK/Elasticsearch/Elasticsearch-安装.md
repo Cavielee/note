@@ -54,7 +54,7 @@ windows 下启用 `bin/elasticsearch.bat` 即可启动。
 
 创建多个节点：将 es 目录 copy 多份（去掉 /data 目录）
 
-![image-20220802121652090](C:\Users\63190\AppData\Roaming\Typora\typora-user-images\image-20220802121652090.png)
+![image-20220802121652090](https://raw.githubusercontent.com/Cavielee/notePics/main/es集群目录.png)
 
 ### 8.3.3 版本
 

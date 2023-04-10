@@ -6,17 +6,17 @@
 
 1. Gerneral 勾选1、3、6
 
-![image-20211206173259672](C:\Users\63190\AppData\Roaming\Typora\typora-user-images\image-20211206173259672.png)
+![image-20211206173259672](https://raw.githubusercontent.com/Cavielee/notePics/main/Fiddler抓包.png)
 
 2. HTTPS 勾选第一个，然后点击右侧选项并选择Export Root Certificate to Desktop
 
-![image-20211206173841540](C:\Users\63190\AppData\Roaming\Typora\typora-user-images\image-20211206173841540.png)
+![image-20211206173841540](https://raw.githubusercontent.com/Cavielee/notePics/main/Fiddler抓包1.png)
 
 3. 设置代理端口
 
 默认端口为8888
 
-![image-20211206175315057](C:\Users\63190\AppData\Roaming\Typora\typora-user-images\image-20211206175315057.png)
+![image-20211206175315057](https://raw.githubusercontent.com/Cavielee/notePics/main/Fiddler抓包2.png)
 
 4. 重启软件
 5. 查看电脑的ip地址，可以通过 cmd 中输入 ipconfig 查询

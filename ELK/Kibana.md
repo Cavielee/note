@@ -135,11 +135,11 @@ Kibana 是一个 web 应用，可以通过5601端口访问。只需要在浏览�
 2. 点击`Next Step`以选择你想要用来执行基于时间比较的包含timestamp字段的索引。如果你的索引没有基于时间的数据，那么选择“I don’t want to use the Time Filter”选项。
 3. 点击`Create index pattern`按钮来添加索引模式。第一个索引模式自动配置为默认的索引默认，以后当你有多个索引模式的时候，你就可以选择将哪一个设为默认。（提示：Management > Index Patterns）
 
-![image-20220913163256340](C:\Users\63190\AppData\Roaming\Typora\typora-user-images\image-20220913163256340.png)
+![image-20220913163256340](https://raw.githubusercontent.com/Cavielee/notePics/main/Kibana添加索引.png)
 
-![image-20220913171719808](C:\Users\63190\AppData\Roaming\Typora\typora-user-images\image-20220913171719808.png)
+![image-20220913171719808](https://raw.githubusercontent.com/Cavielee/notePics/main/Kibana添加索引1.png)
 
-![image-20220913171913277](C:\Users\63190\AppData\Roaming\Typora\typora-user-images\image-20220913171913277.png)
+![image-20220913171913277](https://raw.githubusercontent.com/Cavielee/notePics/main/Kibana添加索引2.png)
 
 
 
@@ -155,7 +155,7 @@ Discover 页面可以查询指定索引匹配的数据。
 
 可以使用 Lucene 的查询语言或者 Kibana 标准的查询语言。Kibana查询语言可以使用自动完成和简化的查询语法作为实验特性，您可以在查询栏的“选项”菜单下进行选择。
 
-![image-20220913174505978](C:\Users\63190\AppData\Roaming\Typora\typora-user-images\image-20220913174505978.png)
+![image-20220913174505978](https://raw.githubusercontent.com/Cavielee/notePics/main/KibanaDiscover.png)
 
 
 
@@ -163,7 +163,7 @@ Discover 页面可以查询指定索引匹配的数据。
 
 如果要修改查询配置：
 
-![image-20220913175753096](C:\Users\63190\AppData\Roaming\Typora\typora-user-images\image-20220913175753096.png)
+![image-20220913175753096](https://raw.githubusercontent.com/Cavielee/notePics/main/KibanaDiscover查询配置.png)
 
 
 
@@ -221,7 +221,7 @@ Visualize 是将数据可视化
 
 **一、创建视图**
 
-![image-20221024095510330](C:\Users\63190\AppData\Roaming\Typora\typora-user-images\image-20221024095510330.png)
+![image-20221024095510330](https://raw.githubusercontent.com/Cavielee/notePics/main/Kibana创建视图.png)
 
 
 
@@ -229,43 +229,43 @@ Visualize 是将数据可视化
 
 #### 饼状图
 
-![image-20221024104804855](C:\Users\63190\AppData\Roaming\Typora\typora-user-images\image-20221024104804855.png)
+![image-20221024104804855](https://raw.githubusercontent.com/Cavielee/notePics/main/Kibana饼状图.png)
 
 将数据源选择分片规则：如范围、分组等：
 
-![image-20221024105403842](C:\Users\63190\AppData\Roaming\Typora\typora-user-images\image-20221024105403842.png)
+![image-20221024105403842](https://raw.githubusercontent.com/Cavielee/notePics/main/Kibana饼状图1.png)
 
 
 
 #### 垂直条形图
 
-![image-20221024113012870](C:\Users\63190\AppData\Roaming\Typora\typora-user-images\image-20221024113012870.png)
+![image-20221024113012870](https://raw.githubusercontent.com/Cavielee/notePics/main/Kibana垂直条形图.png)
 
 配置X/Y轴对应数据
 
-![image-20221024113953584](C:\Users\63190\AppData\Roaming\Typora\typora-user-images\image-20221024113953584.png)
+![image-20221024113953584](https://raw.githubusercontent.com/Cavielee/notePics/main/Kibana垂直条形图1.png)
 
 
 
 #### 时间序列
 
-![image-20221024114138263](C:\Users\63190\AppData\Roaming\Typora\typora-user-images\image-20221024114138263.png)
+![image-20221024114138263](https://raw.githubusercontent.com/Cavielee/notePics/main/Kibana时序图.png)
 
-![image-20221024115032768](C:\Users\63190\AppData\Roaming\Typora\typora-user-images\image-20221024115032768.png)
+![image-20221024115032768](https://raw.githubusercontent.com/Cavielee/notePics/main/Kibana时序图1.png)
 
 配置聚合设置
 
-![image-20221024115052678](C:\Users\63190\AppData\Roaming\Typora\typora-user-images\image-20221024115052678.png)
+![image-20221024115052678](https://raw.githubusercontent.com/Cavielee/notePics/main/Kibana时序图2.png)
 
 
 
 #### 数据表
 
-![image-20221024143749162](C:\Users\63190\AppData\Roaming\Typora\typora-user-images\image-20221024143749162.png)
+![image-20221024143749162](https://raw.githubusercontent.com/Cavielee/notePics/main/Kibana数据表1.png)
 
 可以设置分割行/分割表
 
-![image-20221024143920517](C:\Users\63190\AppData\Roaming\Typora\typora-user-images\image-20221024143920517.png)
+![image-20221024143920517](https://raw.githubusercontent.com/Cavielee/notePics/main/Kibana数据表2.png)
 
 
 
@@ -275,4 +275,4 @@ Dashboard 仪表板
 
 用于指定多个 Visualize 可视化结构，然后根据搜索结果进行可视化展示
 
-![image-20221024181644831](C:\Users\63190\AppData\Roaming\Typora\typora-user-images\image-20221024181644831.png)
+![image-20221024181644831](https://raw.githubusercontent.com/Cavielee/notePics/main/KibanaDashboard.png)

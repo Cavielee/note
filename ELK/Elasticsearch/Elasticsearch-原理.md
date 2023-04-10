@@ -35,7 +35,7 @@
 
 在结构化数据，如Mysql，使用的索引都是使用正向索引。
 
-![image-20220830122120268](C:\Users\63190\AppData\Roaming\Typora\typora-user-images\image-20220830122120268.png)
+![image-20220830122120268](https://raw.githubusercontent.com/Cavielee/notePics/main/倒排索引.png)
 
 如果要搜索文档1的内容时，可以从id索引搜索，然后得到对应的文档内容。（正向索引）
 
@@ -45,7 +45,7 @@
 
 倒排索引主要原理如下：
 
-![image-20220830142758807](C:\Users\63190\AppData\Roaming\Typora\typora-user-images\image-20220830142758807.png)
+![image-20220830142758807](https://raw.githubusercontent.com/Cavielee/notePics/main/倒排索引2.png)
 
 ![图片](https://mmbiz.qpic.cn/mmbiz_png/PxMzT0Oibf4hVH3IUycaXbZib5Koq8WmfkoicqcEKGkEaJgoRj9ScrmHQvNN4yp6CXKPvg114OpDian2PSqQibM9MuA/640?wx_fmt=png&wxfrom=5&wx_lazy=1&wx_co=1)
 
@@ -363,5 +363,5 @@ ES 在建立索引的时候可以设置索引的主副分片数。（一旦设�
 
 
 
-![image-20220830112922174](C:\Users\63190\AppData\Roaming\Typora\typora-user-images\image-20220830112922174.png)
+![image-20220830112922174](https://raw.githubusercontent.com/Cavielee/notePics/main/ELK描述.png)
 

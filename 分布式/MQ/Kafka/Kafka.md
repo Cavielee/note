@@ -22,7 +22,7 @@ kafka 集群：
 * 若干个Consumer Group（消费者）：通过监听使用 pull 模式从 broker 订阅并消费消息。
 * zookeeper 集群（分布式协调）：kafka 通过 zookeeper 管理集群配置及服务协同。
 
-![kafka架构](C:\Users\63190\Desktop\pics\kafka架构.jpg)
+![kafka架构](https://raw.githubusercontent.com/Cavielee/notePics/main/kafka架构.jpg)
 
 
 

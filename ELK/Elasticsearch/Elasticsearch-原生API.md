@@ -8,7 +8,7 @@ Elasticsearch 提供原生的 url 接口直接进行操作。
 
 如果 Elasticsearch 设置了安全验证，则此时调用 url 接口时需要设置用户信息。
 
-![image-20220803164919939](C:\Users\63190\AppData\Roaming\Typora\typora-user-images\image-20220803164919939.png)
+![image-20220803164919939](https://raw.githubusercontent.com/Cavielee/notePics/main/postman指定es用户信息.png)
 
 
 
@@ -16,7 +16,7 @@ Elasticsearch 提供原生的 url 接口直接进行操作。
 
 使用 `PUT` 请求，请求地址 `http://localhost:9200/{indexName}`
 
-![image-20220803165059875](C:\Users\63190\AppData\Roaming\Typora\typora-user-images\image-20220803165059875.png)
+![image-20220803165059875](https://raw.githubusercontent.com/Cavielee/notePics/main/postman创建es索引.png)
 
 ```json
 {
@@ -134,7 +134,7 @@ Elasticsearch 提供原生的 url 接口直接进行操作。
 
 请求体添加文档内容（json 类型）
 
-![image-20220808115651064](C:\Users\63190\AppData\Roaming\Typora\typora-user-images\image-20220808115651064.png)
+![image-20220808115651064](https://raw.githubusercontent.com/Cavielee/notePics/main/postman添加es文档.png)
 
 > 注意：
 >

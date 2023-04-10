@@ -98,7 +98,7 @@ https://www.apifox.cn/
 
 ## 新建团队
 
-![image-20221125102750366](C:\Users\63190\AppData\Roaming\Typora\typora-user-images\image-20221125102750366.png)
+![image-20221125102750366](https://raw.githubusercontent.com/Cavielee/notePics/main/Apifox创建团队.png)
 
 团队用于管理团队的多个项目和多名成员。可以指定团队成员的权限、负责的项目等。
 
@@ -106,7 +106,7 @@ https://www.apifox.cn/
 
 ## 团队成员
 
-![image-20221125103209958](C:\Users\63190\AppData\Roaming\Typora\typora-user-images\image-20221125103209958.png)
+![image-20221125103209958](https://raw.githubusercontent.com/Cavielee/notePics/main/Apifox团队成员.png)
 
 可以邀请 Apifox 的用户进入团队，并且指定该成员团队角色，对团队项目有什么权限。
 
@@ -152,13 +152,13 @@ https://www.apifox.cn/
 
 修改团队成员权限：
 
-![image-20221128111031929](C:\Users\63190\AppData\Roaming\Typora\typora-user-images\image-20221128111031929.png)
+![image-20221128111031929](https://raw.githubusercontent.com/Cavielee/notePics/main/Apifox成员权限.png)
 
 
 
 ## 新建项目
 
-![image-20221128111247165](C:\Users\63190\AppData\Roaming\Typora\typora-user-images\image-20221128111247165.png)
+![image-20221128111247165](https://raw.githubusercontent.com/Cavielee/notePics/main/Apifox新建项目.png)
 
 新建项目时可以设置参与的团队成员对该项目的权限。
 
@@ -170,7 +170,7 @@ https://www.apifox.cn/
 
 ### 基本定义
 
-![image-20221128112424519](C:\Users\63190\AppData\Roaming\Typora\typora-user-images\image-20221128112424519.png)
+![image-20221128112424519](https://raw.githubusercontent.com/Cavielee/notePics/main/Apifox接口定义.png)
 
 上图字段作用：
 
@@ -198,7 +198,7 @@ https://www.apifox.cn/
 
 ### 请求参数定义
 
-![image-20221128121314836](C:\Users\63190\AppData\Roaming\Typora\typora-user-images\image-20221128121314836.png)
+![image-20221128121314836](https://raw.githubusercontent.com/Cavielee/notePics/main/Apifox入参定义.png)
 
 * Params（请求参数）：请求参数分为 Query 参数和 Path 参数
   * Query 参数：通过在 URL 后添加 `?key=value...` 的方式
@@ -236,7 +236,7 @@ https://www.apifox.cn/
 
 ### 响应结果定义
 
-![image-20221128154729981](C:\Users\63190\AppData\Roaming\Typora\typora-user-images\image-20221128154729981.png)
+![image-20221128154729981](https://raw.githubusercontent.com/Cavielee/notePics/main/Apifox响应定义.png)
 
 * 可以根据不同的响应码定义不同的响应情况（响应结果参数、响应结果值）
 * JSON/XML 可以直接贴如结果并快速识别，也可以自动引用数据模型。
@@ -260,13 +260,13 @@ https://www.apifox.cn/
 
 如分页查询都关联分页信息，活动相关接口都关联活动信息。因此可以将这些信息抽取成单独的数据模型，以便定义请求或响应时，直接复用这些数据模型，避免出错和提高效率。
 
-![image-20221128161842599](C:\Users\63190\AppData\Roaming\Typora\typora-user-images\image-20221128161842599.png)
+![image-20221128161842599](https://raw.githubusercontent.com/Cavielee/notePics/main/Apifox数据结构.png)
 
 上图为创建数据模型。可以定义模型基本信息、包含的数据结构、数据的 mock 信息等。
 
 ### 关联数据模型
 
-![image-20221128161927176](C:\Users\63190\AppData\Roaming\Typora\typora-user-images\image-20221128161927176.png)
+![image-20221128161927176](https://raw.githubusercontent.com/Cavielee/notePics/main/Apifox关联数据模型.png)
 
 在接口文档的 Body 参数定义中可以指定关联的数据模型。
 
@@ -282,13 +282,13 @@ https://www.apifox.cn/
 
 ## 环境管理
 
-![image-20221129160642117](C:\Users\63190\AppData\Roaming\Typora\typora-user-images\image-20221129160642117.png)
+![image-20221129160642117](https://raw.githubusercontent.com/Cavielee/notePics/main/Apifox环境管理.png)
 
 项目一般会部署在多个环境，比如`开发环境`、`测试环境`、`生产环境`，通常不同的环境对应 `前置 URL`、`接口参数值`等会不一样。为了避免以为环境不同而频繁的更改接口前置 URL 及参数。
 
 可以通过环境管理功能，在对应不同环境设置不同的前置 URL 及参数，在不同环境中测试时，直接切换环境即可。
 
-![image-20221129162053673](C:\Users\63190\AppData\Roaming\Typora\typora-user-images\image-20221129162053673.png)
+![image-20221129162053673](https://raw.githubusercontent.com/Cavielee/notePics/main/Apifox环境管理1.png)
 
 1. **环境**：可以根据项目实际部署的环境设置环境，常见的有 `开发环境`、`测试环境`、`生产环境`、`本地 Mock（用于 mock 服务）`。
 
@@ -314,7 +314,7 @@ https://www.apifox.cn/
 
 ### 环境变量
 
-![image-20221129171639189](C:\Users\63190\AppData\Roaming\Typora\typora-user-images\image-20221129171639189.png)
+![image-20221129171639189](https://raw.githubusercontent.com/Cavielee/notePics/main/Apifox环境变量.png)
 
 环境变量可以在环境管理中配置。
 
@@ -324,7 +324,7 @@ https://www.apifox.cn/
 
 ### 全局变量
 
-![image-20221201150935440](C:\Users\63190\AppData\Roaming\Typora\typora-user-images\image-20221201150935440.png)
+![image-20221201150935440](https://raw.githubusercontent.com/Cavielee/notePics/main/Apifox全局变量.png)
 
 全局变量不会跟随环境切换而改变。
 
@@ -332,9 +332,9 @@ https://www.apifox.cn/
 
 ### 临时变量
 
-![image-20221201151603353](C:\Users\63190\AppData\Roaming\Typora\typora-user-images\image-20221201151603353.png)
+![image-20221201151603353](https://raw.githubusercontent.com/Cavielee/notePics/main/Apifox临时变量.png)
 
-![image-20221201153827998](C:\Users\63190\AppData\Roaming\Typora\typora-user-images\image-20221201153827998.png)
+![image-20221201153827998](https://raw.githubusercontent.com/Cavielee/notePics/main/Apifox测试数据.png)
 
 临时变量可以通过以下途径设置：
 
@@ -420,11 +420,11 @@ https://www.apifox.cn/
 
 ## 动态变量
 
-![image-20221201171849882](C:\Users\63190\AppData\Roaming\Typora\typora-user-images\image-20221201171849882.png)
+![image-20221201171849882](https://raw.githubusercontent.com/Cavielee/notePics/main/Apifox动态变量.png)
 
 可以在参数值中点击魔法棒的icon，然后可以设置参数值使用常量、变量、动态变量、自定义表达式。
 
-![image-20221201172036923](C:\Users\63190\AppData\Roaming\Typora\typora-user-images\image-20221201172036923.png)
+![image-20221201172036923](https://raw.githubusercontent.com/Cavielee/notePics/main/Apifox动态变量1.png)
 
 通常用于使用动态变量，即mock逻辑。然后运行前，会自动根据参数指定的逻辑替换对应的动态值。
 
@@ -434,7 +434,7 @@ https://www.apifox.cn/
 
 ## 全局参数
 
-![image-20221129170738795](C:\Users\63190\AppData\Roaming\Typora\typora-user-images\image-20221129170738795.png)
+![image-20221129170738795](https://raw.githubusercontent.com/Cavielee/notePics/main/Apifox全局参数.png)
 
 如果项目中所有接口都存在某个 `Header参数`/`Cookie`/`Query参数`/`Body参数`，则可以将其保存为全局参数，并默认启用，这样项目的所有接口都会自动带上该参数，并且只需要改全局参数中的定义，所有接口也会对应同步修改。
 
@@ -442,7 +442,7 @@ https://www.apifox.cn/
 
 ## 接口调试（运行）
 
-![image-20221129160343126](C:\Users\63190\AppData\Roaming\Typora\typora-user-images\image-20221129160343126.png)
+![image-20221129160343126](https://raw.githubusercontent.com/Cavielee/notePics/main/Apifox接口运行.png)
 
 点击运行Tab，会根据接口文档的定义、全局参数自动填充请求参数、接口路径。
 
@@ -454,7 +454,7 @@ https://www.apifox.cn/
 
 ### 暂存
 
-![image-20221201173922891](C:\Users\63190\AppData\Roaming\Typora\typora-user-images\image-20221201173922891.png)
+![image-20221201173922891](https://raw.githubusercontent.com/Cavielee/notePics/main/Apifox暂存.png)
 
 当修改（参数名、数据类型、参数说明）、新增、删除参数时，修改项左侧会有黄色标记且右上角会有不一致标识。鼠标移动到黄色区域，可以选择将改动项保存到接口文档或还原改动。
 
@@ -464,7 +464,7 @@ https://www.apifox.cn/
 
 ### 接口用例
 
-![image-20221201175546402](C:\Users\63190\AppData\Roaming\Typora\typora-user-images\image-20221201175546402.png)
+![image-20221201175546402](https://raw.githubusercontent.com/Cavielee/notePics/main/Apifox接口用例.png)
 
 我们可以把当前运行的请求情况（接口路径、请求参数信息等）保存为接口用例（特定情景）。
 
@@ -497,7 +497,7 @@ https://www.apifox.cn/
 
 **分组（目录）维度：**
 
-![image-20221201182049555](C:\Users\63190\AppData\Roaming\Typora\typora-user-images\image-20221201182049555.png)
+![image-20221201182049555](https://raw.githubusercontent.com/Cavielee/notePics/main/Apifox前后置操作1.png)
 
 点击对应的 `分组` 即可设置，会对分组下的接口/接口用例生效。
 
@@ -505,7 +505,7 @@ https://www.apifox.cn/
 
 **单个接口用例维度：**
 
-![image-20221201182438578](C:\Users\63190\AppData\Roaming\Typora\typora-user-images\image-20221201182438578.png)
+![image-20221201182438578](https://raw.githubusercontent.com/Cavielee/notePics/main/Apifox前后置操作2.png)
 
 在接口用例中设置前置操作/后置操作，只对本 `接口用例` 生效。
 
@@ -528,7 +528,7 @@ https://www.apifox.cn/
 
 数据库操作可读写数据库数据。可以将查询结果赋值给指定变量。
 
-![img](https://cdn.apifox.cn/mirror-www/help/assets/img/database-1.f1fd3250.png)
+![img](https://raw.githubusercontent.com/Cavielee/notePics/main/Apifox数据库操作.png)
 
 > 使用变量时，读取对象或数组类型变量里的属性值写法为`{{allUser[0].name}}`或`{{user.name}}`，遵循`JSON Path`语法规范，只需将`JSON Path`里的`$`符号替换为`变量名`既可。
 
@@ -548,7 +548,7 @@ https://www.apifox.cn/
 
 `断言`：顾名思义就是判断是否符合预期。（可以判断响应返回的数据、耗时、变量）
 
-![img](https://cdn.apifox.cn/mirror-www/help/assets/img/assertion-1.93afb48e.png)
+![img](https://raw.githubusercontent.com/Cavielee/notePics/main/Apifox断言操作.png)
 
 
 
@@ -556,7 +556,7 @@ https://www.apifox.cn/
 
 可以将接口返回结果中的数据设置到变量（临时变量/环境变量/全局变量），方便其他接口运行的时候直接使用。
 
-![img](https://cdn.apifox.cn/mirror-www/help/assets/img/extractor-1.9e2475c1.png)
+![img](https://raw.githubusercontent.com/Cavielee/notePics/main/Apifox提取变量.png)
 
 > 常用场景：
 >
@@ -580,7 +580,7 @@ https://www.apifox.cn/
 
 类似 Postman 的接口调试方式，主要用于临时调试一些还没文档化的接口。运行成功后可以快速将该请求保存为接口，并根据此次请求的参数、响应的结果自动生成该接口的对应 Api 文档。
 
-![image-20221207160828814](C:\Users\63190\AppData\Roaming\Typora\typora-user-images\image-20221207160828814.png)
+![image-20221207160828814](https://raw.githubusercontent.com/Cavielee/notePics/main/Apifox快捷请求.png)
 
 
 
@@ -1216,7 +1216,7 @@ Mock 功能可以根据`接口/数据结构定义`、`Mock规则配置`、`Mock 
 
 **期望：**如果请求满足指定条件时，可以固定返回指定响应结果。
 
-![image-20221208154057382](C:\Users\63190\AppData\Roaming\Typora\typora-user-images\image-20221208154057382.png)
+![image-20221208154057382](https://raw.githubusercontent.com/Cavielee/notePics/main/Apifox高级Mock.png)
 
 
 

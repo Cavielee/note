@@ -573,11 +573,11 @@ private Object[] getMethodArgumentValues(NativeWebRequest request, @Nullable Mod
 
 流程图：
 
-![SpringMVC流程图](C:\Users\63190\Desktop\pics\SpringMVC流程图.jpg)
+![SpringMVC流程图](https://raw.githubusercontent.com/Cavielee/notePics/main/SpringMVC流程图.jpg)
 
 时序图：
 
-![SpringMVC时序图](C:\Users\63190\Desktop\pics\SpringMVC时序图.jpg)
+![SpringMVC时序图](https://raw.githubusercontent.com/Cavielee/notePics/main/SpringMVC时序图.jpg)
 
 
 

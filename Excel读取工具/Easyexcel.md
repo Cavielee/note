@@ -333,7 +333,7 @@ public class ActivityTitleConverter implements Converter<String> {
 
 如果行头存在多行，如：
 
-![image-20220722121505666](C:\Users\63190\AppData\Roaming\Typora\typora-user-images\image-20220722121505666.png)
+![image-20220722121505666](https://raw.githubusercontent.com/Cavielee/notePics/main/EasyExcel多行头.png)
 
 则读取和写入时需要指定多个行名：
 
@@ -906,7 +906,7 @@ public String upload(MultipartFile file) throws IOException {
 }
 ```
 
-# ![image-20220722113422064](C:\Users\63190\AppData\Roaming\Typora\typora-user-images\image-20220722113422064.png)
+![image-20220722113422064](https://raw.githubusercontent.com/Cavielee/notePics/main/EasyExcel网络读取.png)
 
 
 

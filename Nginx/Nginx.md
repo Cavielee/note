@@ -41,7 +41,7 @@ Tomcat 就是 Application Server 的一种。由于 Tomcat 包含了 web 服务�
 
 ## 正向代理
 
-![image-20221025162911576](C:\Users\63190\AppData\Roaming\Typora\typora-user-images\image-20221025162911576.png)
+![image-20221025162911576](https://raw.githubusercontent.com/Cavielee/notePics/main/正向代理.png)
 
 代理服务器和客户端在同一个局域网中，客户端无法直接对外访问，而是由代理服务器进行对外暴露。客户端发送请求给目标服务器，实际是统一有代理服务器进行发送。
 
@@ -51,7 +51,7 @@ Tomcat 就是 Application Server 的一种。由于 Tomcat 包含了 web 服务�
 
 ## 反向代理
 
-![image-20221025163704736](C:\Users\63190\AppData\Roaming\Typora\typora-user-images\image-20221025163704736.png)
+![image-20221025163704736](https://raw.githubusercontent.com/Cavielee/notePics/main/反向代理.png)
 
 代理服务器和目标服务器在同一个局域网中，客户端无法直接访问目标服务器，而是由代理服务器提供对外暴露的地址，由代理服务器选择具体处理请求的目标服务器，并将结果返回给客户端。
 
@@ -65,7 +65,7 @@ Tomcat 就是 Application Server 的一种。由于 Tomcat 包含了 web 服务�
 
 
 
-![image-20221028142718116](C:\Users\63190\AppData\Roaming\Typora\typora-user-images\image-20221028142718116.png)
+![image-20221028142718116](https://raw.githubusercontent.com/Cavielee/notePics/main/负载均衡.png)
 
 客户端发送请求给服务端，服务端处理请求（请求处理可能涉及数据库交互），请求处理完后会将结果响应给客户端。
 
@@ -82,7 +82,7 @@ Tomcat 就是 Application Server 的一种。由于 Tomcat 包含了 web 服务�
 
 因此提出了负载均衡的策略：
 
-![image-20221028144544567](C:\Users\63190\AppData\Roaming\Typora\typora-user-images\image-20221028144544567.png)
+![image-20221028144544567](https://raw.githubusercontent.com/Cavielee/notePics/main/Nginx负载均衡1.png)
 
 将原本只有一台的服务器部署多台，客户端只需要请求反向代理服务器，反向代理服务器就会根据负载均衡策略将请求分配给指定的服务器进行处理。
 
@@ -100,7 +100,7 @@ Tomcat 就是 Application Server 的一种。由于 Tomcat 包含了 web 服务�
 
 静态资源：如 CSS、JS、HTML、IMG 等，这些一般不会变更。
 
-![image-20221028151749584](C:\Users\63190\AppData\Roaming\Typora\typora-user-images\image-20221028151749584.png)
+![image-20221028151749584](https://raw.githubusercontent.com/Cavielee/notePics/main/Nginx动静分离.png)
 
 对于资源我们可以存放在服务器中，客户端每次获取资源，都会由服务器响应返回。
 
@@ -137,7 +137,7 @@ Nginx 会创建一个 Master 进程，然后根据配置指定的 Worker 进程�
 * Master 进程作用：负责管理、监控 Worker 进程。
 * Worker 进程作用：负责与 Client 建立连接，并处理请求。
 
-![image-20221028161203231](C:\Users\63190\AppData\Roaming\Typora\typora-user-images\image-20221028161203231.png)
+![image-20221028161203231](https://raw.githubusercontent.com/Cavielee/notePics/main/Nginx进程模型.png)
 
 客户端发起请求到 Nginx 流程：
 
@@ -1079,7 +1079,7 @@ OSI 7层模型：应用层、表示层、会话层、传输层、网络层、数
 
 常见的四层负载有：LVS、F5； 七层负载有:Nginx、HAproxy; 在软件层面，Nginx/LVS/HAProxy是使用得比较广泛的三种负载均衡软件。对于中小型的Web应用可以使用Nginx；大型网站或者重要的服务并且服务比较多的时候，可以考虑使用LVS。
 
-![image-20221031170933644](C:\Users\63190\AppData\Roaming\Typora\typora-user-images\image-20221031170933644.png)
+![image-20221031170933644](https://raw.githubusercontent.com/Cavielee/notePics/main/Keepalive高可用.png)
 
 Keepalived 提供统一虚拟ip给外网访问，当 Master 节点 Nginx 不可用时，会将 backup 节点提升为 Master 节点，并使用新的 Master 节点的 Nginx，从而达到 Nginx 的高可用。
 

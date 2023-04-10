@@ -84,7 +84,7 @@ AQS 会维护头节点和尾节点，从而实现双线链表。
 
 当已经有线程获取到锁资源时，其他线程竞争锁资源会放入封装成 Node 节点插入到 AQS 队列队尾中，并阻塞等待锁资源释放被唤醒。
 
-![AQS锁竞争](C:\Users\63190\Desktop\pics\AQS锁竞争.png)
+![AQS锁竞争](https://raw.githubusercontent.com/Cavielee/notePics/main/AQS锁竞争.png)
 
 ```java
 private Node addWaiter(Node mode) {
@@ -139,7 +139,7 @@ private Node enq(final Node node) {
 
 当获取锁资源的节点（头节点）释放锁时，会将其后继节点设置为新的头节点（下一个获取锁资源的节点），并唤醒该节点的线程。
 
-![AQS锁释放](C:\Users\63190\Desktop\pics\AQS锁释放.png)
+![AQS锁释放](https://raw.githubusercontent.com/Cavielee/notePics/main/AQS锁释放.png)
 
 释放锁资源（实际上为修改头节点）步骤如下：
 
@@ -584,7 +584,7 @@ protected final boolean tryAcquire(int acquires) {
 
 #### 总结
 
-![ReentrantLock](C:\Users\63190\Desktop\pics\ReentrantLock.png)
+![ReentrantLock](https://raw.githubusercontent.com/Cavielee/notePics/main/ReentrantLock.png)
 
 上图为 ThreadA 获取到锁，ThreadB和ThreadC阻塞等待锁。
 
@@ -870,7 +870,7 @@ final boolean transferForSignal(Node node) {
 
 ### 总结
 
-![Condition](C:\Users\63190\Desktop\pics\Condition.jpg)
+![Condition](https://raw.githubusercontent.com/Cavielee/notePics/main/Condition.jpg)
 
 
 

@@ -64,7 +64,7 @@
 
 ### API
 
-![Spring 事务API](C:\Users\63190\Desktop\pics\Spring 事务API.png)
+![Spring 事务API](https://raw.githubusercontent.com/Cavielee/notePics/main/Spring 事务API.png)
 
 Spring 提供了一个 PlatformTransactionManager 接口，该接口用于获取事务，事务获取的具体逻辑由具体数据访问技术去实现如使用 JDBC 去访问数据库，则使用对应使用 DataSourceTransactionManager 去获取事务。
 

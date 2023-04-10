@@ -6,11 +6,11 @@ Redis 一般用来将 **热点数据** 或 **分布式数据** 从数据库缓�
 
 1. 命中缓存
 
-![命中缓存](C:\Users\63190\Desktop\pics\命中缓存.jpg)
+![命中缓存](https://raw.githubusercontent.com/Cavielee/notePics/main/命中缓存.jpg)
 
 2. 没有命中缓存
 
-![没有命中缓存](C:\Users\63190\Desktop\pics\没有命中缓存.jpg)
+![没有命中缓存](https://raw.githubusercontent.com/Cavielee/notePics/main/没有命中缓存.jpg)
 
 ## 数据更新
 

@@ -4,7 +4,7 @@ Zookeeper 是一个高可靠的分布式协调中间件。
 
 # 数据模型
 
-![Zookeeper节点](C:\Users\63190\Desktop\pics\Zookeeper节点.png)
+![Zookeeper节点](https://raw.githubusercontent.com/Cavielee/notePics/main/Zookeeper节点.png)
 
 客户端可以通过 Zookeeper 中间件进行数据存储。
 
@@ -319,7 +319,7 @@ watcher 类型分为两种：
 
 而 Zookeeper 可以作为第三方存储中间件去管理服务地址信息，服务提供者只需将自己地址信息注册（存储）到 Zookeeper 中，而服务消费者从 Zookeeper 中获取服务提供者地址信息，并且 Zookeeper 提供事件机制，用于当服务提供者不可用时主动通知服务消费者。
 
-![Zookeeper服务注册中心](C:\Users\63190\Desktop\pics\Zookeeper服务注册中心.jpg)
+![Zookeeper服务注册中心](https://raw.githubusercontent.com/Cavielee/notePics/main/Zookeeper服务注册中心.jpg)
 
 - **服务注册：** 服务提供者（`Provider`）启动时，会向 `zookeeper服务端` 注册服务信息，也就是创建一个节点，例如：用户注册服务`com.xxx.user.register`，并在节点上存储服务的相关数据（如服务提供者的 ip 地址、端口等）。
 - **服务发现：** 服务消费者（`Consumer`）启动时，根据自身配置的依赖服务信息，向`zookeeper服务端`获取注册的服务信息并设置 `watch监听`，获取到注册的服务信息之后，将服务提供者的信息缓存在本地，并进行服务的调用。

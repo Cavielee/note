@@ -102,13 +102,13 @@
 System.out.println(System.getProperty("file.encoding"));
 ```
 
-![image-20220509095455527](C:\Users\63190\AppData\Roaming\Typora\typora-user-images\image-20220509095455527.png)
+![image-20220509095455527](https://raw.githubusercontent.com/Cavielee/notePics/main/idea文件编码.png)
 
 修改idea配置
 
-![image-20220509104700607](C:\Users\63190\AppData\Roaming\Typora\typora-user-images\image-20220509104700607.png)
+![image-20220509104700607](https://raw.githubusercontent.com/Cavielee/notePics/main/idea文件编码2.png)
 
-![image-20220509104713790](C:\Users\63190\AppData\Roaming\Typora\typora-user-images\image-20220509104713790.png)
+![image-20220509104713790](https://raw.githubusercontent.com/Cavielee/notePics/main/idea文件编码3.png)
 
 ```
 -Dfile.encoding=UTF-8

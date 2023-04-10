@@ -1739,7 +1739,7 @@
 
 1. 【推荐】根据业务架构实践，结合业界分层规范与流行技术框架分析，推荐分层结构如图所示，默认上层依赖于下层，箭头关系表示可直接依赖，如：开放API层可以依赖于Web层（Controller层），也可以直接依赖于Service层，依此类推：
 
-![应用分层](G:\笔记\notePics\应用分层.jpg)
+![应用分层](https://raw.githubusercontent.com/Cavielee/notePics/main/应用分层.jpg)
 
 * 开放API层：可直接封装Service接口暴露成RPC接口；通过Web封装成http接口；网关控制层等。
 * 终端显示层：各个端的模板渲染并执行显示的层。当前主要是velocity渲染，JS渲染，JSP渲染，移动端展示等。

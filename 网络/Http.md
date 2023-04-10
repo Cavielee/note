@@ -61,7 +61,7 @@ HTTP 协议包含两个报文，请求报文 Request 和响应报文 Response。
 
 ## Request
 
-![Request](C:\Users\63190\Desktop\pics\Request.png)
+![Request](https://raw.githubusercontent.com/Cavielee/notePics/main/Request.png)
 
 请求报文格式包含三个部分：请求行、请求头、请求体。
 
@@ -76,7 +76,7 @@ HTTP 协议包含两个报文，请求报文 Request 和响应报文 Response。
 
 ## Response
 
-![Response](C:\Users\63190\Desktop\pics\Response.png)
+![Response](https://raw.githubusercontent.com/Cavielee/notePics/main/Response.png)
 
 响应报文格式包含三个部分：状态行、响应头、响应体。
 
@@ -294,7 +294,7 @@ SSL 是通过加密的形式构建通信通道。
 
 下图为中间人攻击为将服务端的公钥篡改成自己的公钥发送给客户端。
 
-![中间人攻击](C:\Users\63190\Desktop\pics\中间人攻击.jpg)
+![中间人攻击](https://raw.githubusercontent.com/Cavielee/notePics/main/中间人攻击.jpg)
 
 
 
@@ -316,9 +316,9 @@ SSL 是通过加密的形式构建通信通道。
 
 客户端收到证书后，会根据证书中服务端信息的进行加密生成的证书编号，将该证书编号和证书中原由的证书编号（通过第三方机构公钥解密获得）进行对比，如果相同则表示证书没有被篡改。
 
-![数字证书](C:\Users\63190\Desktop\pics\数字证书.jpg)
+![数字证书](https://raw.githubusercontent.com/Cavielee/notePics/main/数字证书.jpg)
 
-![数字证书验证](C:\Users\63190\Desktop\pics\数字证书验证.jpg)
+![数字证书验证](https://raw.githubusercontent.com/Cavielee/notePics/main/数字证书验证.jpg)
 
 
 
